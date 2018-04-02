@@ -5,95 +5,40 @@ import model.data_structures.IQueue;
 import model.data_structures.IStack;
 import model.data_structures.LinkedList;
 import model.logic.TaxiTripsManager;
-import model.vo.Compania;
-import model.vo.CompaniaServicios;
-import model.vo.CompaniaTaxi;
-import model.vo.InfoTaxiRango;
-import model.vo.RangoDistancia;
-import model.vo.RangoFechaHora;
-import model.vo.Servicio;
-import model.vo.ServiciosValorPagado;
-import model.vo.Taxi;
-import model.vo.ZonaServicios;
 
 public class Controller 
 {
 	/**
 	 * modela el manejador de la clase l�gica
 	 */
-	private static ITaxiTripsManager manager = new TaxiTripsManager();
-
-	//1C
-	public static boolean cargarSistema(String direccionJson)
-	{
-		return manager.cargarSistema(direccionJson);
-	}
-	//A1
-	public static IQueue<Servicio> darServiciosEnRango(RangoFechaHora rango)
-	{
-		return manager.darServiciosEnPeriodo(rango);
-	}
-
-	//2A
-	public static Taxi darTaxiConMasServiciosEnCompaniaYRango(RangoFechaHora rango, String company)
-	{
-		return manager.darTaxiConMasServiciosEnCompaniaYRango(rango, company);
-	}
-
-	//3A
-	public static InfoTaxiRango darInformacionTaxiEnRango(String id, RangoFechaHora rango)
-	{
-		return manager.darInformacionTaxiEnRango(id, rango);
-	}
-
-	//4A
-	public static LinkedList<RangoDistancia> darListaRangosDistancia(String fecha, String horaInicial, String horaFinal) 
-	{
-		return manager.darListaRangosDistancia(fecha, horaInicial, horaFinal);
-	}
+	private static ITaxiTripsManager  manager = new TaxiTripsManager();
 	
-	//1B
-	public static LinkedList<Compania> darCompaniasTaxisInscritos()
-	{
-		return manager.darCompaniasTaxisInscritos();
+	public static boolean cargarSistema(String serviceFile) {
+		//Chequear  como cambiar de archivo
+		
+		//Cambiar la siguiente linea:
+		//serviceFile = "/Users/juanestebanmendez/Documents/Los Andes/Estructuras de Datos/proyecto_201810_sec_3_team_9/data/taxi-trips-wrvz-psew-subset-small.json";
+		boolean cargo = false;
+		String[] serviceFilesArray = null;
+		if(serviceFile == TaxiTripsManager.DIRECCION_LARGE_JSON) {
+			serviceFilesArray = new String[7];
+			serviceFilesArray[0] = TaxiTripsManager.DIRECCION_LARGE_JSON_DIA_1;
+			serviceFilesArray[1] = TaxiTripsManager.DIRECCION_LARGE_JSON_DIA_2;
+			serviceFilesArray[2] = TaxiTripsManager.DIRECCION_LARGE_JSON_DIA_3;
+			serviceFilesArray[3] = TaxiTripsManager.DIRECCION_LARGE_JSON_DIA_4;
+			serviceFilesArray[4] = TaxiTripsManager.DIRECCION_LARGE_JSON_DIA_5;
+			serviceFilesArray[5] = TaxiTripsManager.DIRECCION_LARGE_JSON_DIA_6;
+			serviceFilesArray[6] = TaxiTripsManager.DIRECCION_LARGE_JSON_DIA_7;
+		}else if(serviceFile == TaxiTripsManager.DIRECCION_SMALL_JSON) {
+			serviceFilesArray = new String[1];
+			serviceFilesArray[0] = TaxiTripsManager.DIRECCION_SMALL_JSON;
+		}else if(serviceFile == TaxiTripsManager.DIRECCION_MEDIUM_JSON) {
+			serviceFilesArray = new String[1];
+			serviceFilesArray[0] = TaxiTripsManager.DIRECCION_MEDIUM_JSON;
+		}
+		
+		cargo = manager.cargarSistema(serviceFilesArray);
+		return cargo;
 	}
-	
-	//2B
-	public static Taxi darTaxiMayorFacturacion(RangoFechaHora rango, String nomCompania)
-	{
-		return manager.darTaxiMayorFacturacion(rango, nomCompania);
-	}
-	
-	//3B
-	public static ServiciosValorPagado[] darServiciosZonaValorTotal(RangoFechaHora rango, String idZona)
-	{
-		return manager.darServiciosZonaValorTotal(rango, idZona);
-	}
-	
-	//4B
-	public static LinkedList<ZonaServicios> darZonasServicios (RangoFechaHora rango)
-	{
-		return manager.darZonasServicios(rango);
-	}
-	
-	//2C
-	public static LinkedList<CompaniaServicios> companiasMasServicios(RangoFechaHora rango, int n)
-	{
-		return manager.companiasMasServicios(rango, n);
-	}
-
-	//3C
-	public static LinkedList<CompaniaTaxi> taxisMasRentables()
-	{
-		return manager.taxisMasRentables();
-	}
-
-	//4C
-	public static IStack <Servicio> darServicioResumen(String taxiId, String horaInicial, String horaFinal, String fecha)
-	{
-		return manager.darServicioResumen(taxiId,horaInicial,horaFinal,fecha);
-	}
-
-
 
 }

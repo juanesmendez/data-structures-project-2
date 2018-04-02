@@ -7,17 +7,6 @@ import model.data_structures.IQueue;
 import model.data_structures.IStack;
 import model.data_structures.LinkedList;
 import model.logic.TaxiTripsManager;
-import model.vo.Compania;
-import model.vo.CompaniaServicios;
-import model.vo.CompaniaTaxi;
-import model.vo.InfoTaxiRango;
-import model.vo.RangoDistancia;
-import model.vo.RangoFechaHora;
-import model.vo.Servicio;
-import model.vo.ServicioResumen;
-import model.vo.ServiciosValorPagado;
-import model.vo.Taxi;
-import model.vo.ZonaServicios;
 
 /**
  * view del programa
@@ -91,261 +80,48 @@ public class TaxiTripsManagerView
 				//1A	
 			case 2:
 
-				//fecha inicial
-				System.out.println("Ingrese la fecha inicial (Ej : 2017-02-01)");
-				String fechaInicialReq1A = sc.next();
-
-				//hora inicial
-				System.out.println("Ingrese la hora inicial (Ej: 09:00:00.000)");
-				String horaInicialReq1A = sc.next();
-
-				//fecha final
-				System.out.println("Ingrese la fecha final (Ej : 2017-02-01)");
-				String fechaFinalReq1A = sc.next();
-
-				//hora final
-				System.out.println("Ingrese la hora final (Ej: 09:00:00.000)");
-				String horaFinalReq1A = sc.next();
-
-				//VORangoFechaHora
-				RangoFechaHora rangoReq1A = new RangoFechaHora(fechaInicialReq1A, fechaFinalReq1A, horaInicialReq1A, horaFinalReq1A);
-
-				//Se obtiene la queue dada el rango
-				IQueue<Servicio> colaReq1A = Controller.darServiciosEnRango(rangoReq1A);
-				//TODO 
-				//Recorra la cola y muestre cada servicio en ella
+		
 				break;
 				
 			case 3: //2A
 				
-				//comany
-				System.out.println("Ingrese el nombre de la compa��a");
-				String companyReq2A = sc.next();
-				
-				//fecha inicial
-				System.out.println("Ingrese la fecha inicial (Ej : 2017-02-01)");
-				String fechaInicialReq2A = sc.next();
-
-				//hora inicial
-				System.out.println("Ingrese la hora inicial (Ej: 09:00:00.000)");
-				String horaInicialReq2A = sc.next();
-
-				//fecha final
-				System.out.println("Ingrese la fecha final (Ej : 2017-02-01)");
-				String fechaFinalReq2A = sc.next();
-
-				//hora final
-				System.out.println("Ingrese la hora final (Ej: 09:00:00.000)");
-				String horaFinalReq2A = sc.next();
-
-				//VORangoFechaHora
-				RangoFechaHora rangoReq2A = new RangoFechaHora(fechaInicialReq2A, fechaFinalReq2A, horaInicialReq2A, horaFinalReq2A);
-				Taxi taxiReq2A = Controller.darTaxiConMasServiciosEnCompaniaYRango(rangoReq2A, companyReq2A);
-				
-				//TODO
-				//Muestre la info del taxi
 
 				break;
 				
 			case 4: //3A
 				
-				//comany
-				System.out.println("Ingrese el id del taxi");
-				String idTaxiReq3A = sc.next();
-				
-				//fecha inicial
-				System.out.println("Ingrese la fecha inicial (Ej : 2017-02-01)");
-				String fechaInicialReq3A = sc.next();
-
-				//hora inicial
-				System.out.println("Ingrese la hora inicial (Ej: 09:00:00.000)");
-				String horaInicialReq3A = sc.next();
-
-				//fecha final
-				System.out.println("Ingrese la fecha final (Ej : 2017-02-01)");
-				String fechaFinalReq3A = sc.next();
-
-				//hora final
-				System.out.println("Ingrese la hora final (Ej: 09:00:00.000)");
-				String horaFinalReq3A = sc.next();
-
-				//VORangoFechaHora
-				RangoFechaHora rangoReq3A = new RangoFechaHora(fechaInicialReq3A, fechaFinalReq3A, horaInicialReq3A, horaFinalReq3A);
-				InfoTaxiRango taxiReq3A = Controller.darInformacionTaxiEnRango(idTaxiReq3A, rangoReq3A);
-				
-				//TODO
-				//Muestre la info del taxi
 
 				break;
 				
 			case 5: //4A
 				
-				//fecha 
-				System.out.println("Ingrese la fecha inicial (Ej : 2017-02-01)");
-				String fechaReq4A = sc.next();
-
-				//hora inicial
-				System.out.println("Ingrese la hora inicial (Ej: 09:00:00.000)");
-				String horaInicialReq4A = sc.next();
-				
-				//hora final
-				System.out.println("Ingrese la hora final (Ej: 09:00:00.000)");
-				String horaFinalReq4A = sc.next();
-				
-				LinkedList<RangoDistancia> listaReq4A = Controller.darListaRangosDistancia(fechaReq4A, horaInicialReq4A, horaFinalReq4A);
-				
-				//TODO
-				//Recorra la lista y por cada VORangoDistancia muestre los servicios
 
 				break;
 				
 			case 6: //1B
-				LinkedList<Compania> lista=Controller.darCompaniasTaxisInscritos();
-				//TODO
-				//Mostrar la informacion de acuerdo al enunciado
+				
 				break;
 				
 			case 7: //2B
-				//fecha inicial
-				System.out.println("Ingrese la fecha inicial (Ej : 2017-02-01)");
-				String fechaInicialReq2B = sc.next();
-
-				//hora inicial
-				System.out.println("Ingrese la hora inicial (Ej: 09:00:00.000)");
-				String horaInicialReq2B = sc.next();
-
-				//fecha final
-				System.out.println("Ingrese la fecha final (Ej : 2017-02-01)");
-				String fechaFinalReq2B = sc.next();
-
-				//hora final
-				System.out.println("Ingrese la hora final (Ej: 09:00:00.000)");
-				String horaFinalReq2B = sc.next();
-				
-				//Compania
-				System.out.println("Ingrese el nobre de la compa�ia");
-				String compania2B=sc.next();
-
-				//VORangoFechaHora
-				RangoFechaHora rangoReq2B = new RangoFechaHora(fechaInicialReq2B, fechaFinalReq2B, horaInicialReq2B, horaFinalReq2B);
-
-				Taxi taxi=Controller.darTaxiMayorFacturacion(rangoReq2B, compania2B);
-				
-				//TODO
-				//Mostrar la informacion del taxi obtenido
 
 				break;
 				
 			case 8: //3B
-				//Compania
-				System.out.println("Ingrese el id de la zona");
-				String zona3B=sc.next();
-				
-				//fecha inicial
-				System.out.println("Ingrese la fecha inicial (Ej : 2017-02-01)");
-				String fechaInicialReq3B = sc.next();
-
-				//hora inicial
-				System.out.println("Ingrese la hora inicial (Ej: 09:00:00.000)");
-				String horaInicialReq3B = sc.next();
-
-				//fecha final
-				System.out.println("Ingrese la fecha final (Ej : 2017-02-01)");
-				String fechaFinalReq3B = sc.next();
-
-				//hora final
-				System.out.println("Ingrese la hora final (Ej: 09:00:00.000)");
-				String horaFinalReq3B = sc.next();
-				
-				RangoFechaHora rango3B= new RangoFechaHora(fechaInicialReq3B, fechaFinalReq3B, horaInicialReq3B, horaFinalReq3B);
-
-				ServiciosValorPagado[] resp=Controller.darServiciosZonaValorTotal(rango3B, zona3B);
-				//TODO
-				//Mostrar la informacion de acuerdo al enunciado
 				break;
 				
 			case 9: //4B
-				//fecha inicial
-				System.out.println("Ingrese la fecha inicial (Ej : 2017-02-01)");
-				String fechaInicialReq4B = sc.next();
-
-				//hora inicial
-				System.out.println("Ingrese la hora inicial (Ej: 09:00:00.000)");
-				String horaInicialReq4B = sc.next();
-
-				//fecha final
-				System.out.println("Ingrese la fecha final (Ej : 2017-02-01)");
-				String fechaFinalReq4B = sc.next();
-
-				//hora final
-				System.out.println("Ingrese la hora final (Ej: 09:00:00.000)");
-				String horaFinalReq4B = sc.next();
-				
-				RangoFechaHora rango4B= new RangoFechaHora(fechaInicialReq4B, fechaFinalReq4B, horaInicialReq4B, horaFinalReq4B);
-				
-				LinkedList<ZonaServicios> lista4B= Controller.darZonasServicios(rango4B);
-				//TODO
-				//Mostrar la informacion de acuerdo al enunciado
 
 				break;
 				
-			case 10: //2C
-				System.out.println("Ingrese el n�mero n de compa�ias");
-				int n2C=sc.nextInt();
-				
-				//fecha inicial
-				System.out.println("Ingrese la fecha inicial (Ej : 2017-02-01)");
-				String fechaInicialReq2C = sc.next();
-
-				//hora inicial
-				System.out.println("Ingrese la hora inicial (Ej: 09:00:00.000)");
-				String horaInicialReq2C = sc.next();
-
-				//fecha final
-				System.out.println("Ingrese la fecha final (Ej : 2017-02-01)");
-				String fechaFinalReq2C = sc.next();
-
-				//hora final
-				System.out.println("Ingrese la hora final (Ej: 09:00:00.000)");
-				String horaFinalReq2C = sc.next();
-				
-				RangoFechaHora rango2C= new RangoFechaHora(fechaInicialReq2C, fechaFinalReq2C, horaInicialReq2C, horaFinalReq2C);
-
-				LinkedList<CompaniaServicios> lista2C= Controller.companiasMasServicios(rango2C, n2C);
-				//TODO
-				//Mostrar la informacion de acuerdo al enunciado				
+			case 10: //2C				
 
 				break;
 				
-			case 11: //3C
-				LinkedList<CompaniaTaxi> lista3C=Controller.taxisMasRentables();
-				//TODO
-				//Mostrar la informacion de acuerdo al enunciado				
+			case 11: //3C			
 
 				break;
 				
 			case 12: //4C
-				
-				//id taxi
-				System.out.println("Ingrese el id del taxi");
-				String idTaxi4C=sc.next();
-				
-				//fecha 
-				System.out.println("Ingrese la fecha inicial (Ej : 2017-02-01)");
-				String fechaReq4C = sc.next();
-
-				//hora inicial
-				System.out.println("Ingrese la hora inicial (Ej: 09:00:00.000)");
-				String horaInicialReq4C = sc.next();
-				
-				//hora final
-				System.out.println("Ingrese la hora final (Ej: 09:00:00.000)");
-				String horaFinalReq4C = sc.next();
-				
-				IStack <Servicio> resp4C=Controller.darServicioResumen(idTaxi4C, horaInicialReq4C, horaFinalReq4C, fechaReq4C);
-				//TODO
-				//Mostrar la informacion de acuerdo al enunciado				
-
 				break;
  
 			case 13: //salir

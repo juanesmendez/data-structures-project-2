@@ -1,24 +1,20 @@
 package model.data_structures;
 
-public interface IQueue <T> 
-{
-	/**
-	 * Agregar un item al tope de la cola
-	 */
+public interface IQueue<T> extends Iterable<T> {
+	
+	/** Enqueue a new element at the end of the queue */
 	public void enqueue(T item);
-
-	/**
-	 * Elimina el elemento al tope de la cola
+	
+	/** Dequeue the "first" element in the queue
+	 * @return "first" element or null if it doesn't exist
 	 */
 	public T dequeue();
-
-	/**
-	 * Indica si la cola esta vacia
+	
+	/** Evaluate if the queue is empty. 
+	 * @return true if the queue is empty. false in other case.
 	 */
 	public boolean isEmpty();
-
-	/**
-	 * Numeros de elementos en la lista
-	 */
+	
 	public int size();
+	
 }

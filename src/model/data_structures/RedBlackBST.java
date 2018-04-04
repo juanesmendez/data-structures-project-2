@@ -102,13 +102,17 @@ public class RedBlackBST<Key extends Comparable<Key>, Value> implements IRedBlac
     ***************************************************************************/
     // is node x red; false if x is null ?
     private boolean isRed(Node x) {
-        if (x == null) return false;
+        if (x == null) {
+        	return false;
+        }
         return x.color == RED;
     }
 
     // number of node in subtree rooted at x; 0 if x is null
     private int size(Node x) {
-        if (x == null) return 0;
+        if (x == null) {
+        	return 0;
+        }
         return x.size;
     } 
 
@@ -142,7 +146,9 @@ public class RedBlackBST<Key extends Comparable<Key>, Value> implements IRedBlac
      * @throws IllegalArgumentException if {@code key} is {@code null}
      */
     public Value get(Key key) {
-        if (key == null) throw new IllegalArgumentException("argument to get() is null");
+        if (key == null) {
+        	throw new IllegalArgumentException("argument to get() is null");
+        }
         return get(root, key);
     }
 
@@ -150,9 +156,13 @@ public class RedBlackBST<Key extends Comparable<Key>, Value> implements IRedBlac
     private Value get(Node x, Key key) {
         while (x != null) {
             int cmp = key.compareTo(x.key);
-            if      (cmp < 0) x = x.left;
-            else if (cmp > 0) x = x.right;
-            else              return x.val;
+            if(cmp < 0) {
+            	x = x.left;
+            }else if (cmp > 0) {
+            	x = x.right;
+            }else {
+            	return x.val;
+            }
         }
         return null;
     }
@@ -183,7 +193,9 @@ public class RedBlackBST<Key extends Comparable<Key>, Value> implements IRedBlac
      * @throws IllegalArgumentException if {@code key} is {@code null}
      */
     public void put(Key key, Value val) {
-        if (key == null) throw new IllegalArgumentException("first argument to put() is null");
+        if (key == null) {
+        	throw new IllegalArgumentException("first argument to put() is null");
+        }
         if (val == null) {
             delete(key);
             return;
@@ -196,17 +208,29 @@ public class RedBlackBST<Key extends Comparable<Key>, Value> implements IRedBlac
 
     // insert the key-value pair in the subtree rooted at h
     private Node put(Node h, Key key, Value val) { 
-        if (h == null) return new Node(key, val, RED, 1);
+        if (h == null) {
+        	return new Node(key, val, RED, 1);
+        }
 
         int cmp = key.compareTo(h.key);
-        if      (cmp < 0) h.left  = put(h.left,  key, val); 
-        else if (cmp > 0) h.right = put(h.right, key, val); 
-        else              h.val   = val;
+        if(cmp < 0) {
+        	h.left  = put(h.left,  key, val); 
+        }else if (cmp > 0) {
+        	h.right = put(h.right, key, val); 
+        }else {
+        	h.val   = val;
+        }
 
         // fix-up any right-leaning links
-        if (isRed(h.right) && !isRed(h.left))      h = rotateLeft(h);
-        if (isRed(h.left)  &&  isRed(h.left.left)) h = rotateRight(h);
-        if (isRed(h.left)  &&  isRed(h.right))     flipColors(h);
+        if (isRed(h.right) && !isRed(h.left)) {
+        	h = rotateLeft(h);
+        }
+        if (isRed(h.left)  &&  isRed(h.left.left)) {
+        	h = rotateRight(h);
+        }
+        if (isRed(h.left)  &&  isRed(h.right)) {
+        	flipColors(h);
+        }
         h.size = size(h.left) + size(h.right) + 1;
 
         return h;
@@ -221,25 +245,29 @@ public class RedBlackBST<Key extends Comparable<Key>, Value> implements IRedBlac
      * @throws NoSuchElementException if the symbol table is empty
      */
     public void deleteMin() {
-        if (isEmpty()) throw new NoSuchElementException("BST underflow");
+        if (isEmpty()) {
+        	throw new NoSuchElementException("BST underflow");
+        }
 
         // if both children of root are black, set root to red
-        if (!isRed(root.left) && !isRed(root.right))
+        if (!isRed(root.left) && !isRed(root.right)) {
             root.color = RED;
-
+        }
         root = deleteMin(root);
-        if (!isEmpty()) root.color = BLACK;
+        if (!isEmpty()) {
+        	root.color = BLACK;
+        }
         // assert check();
     }
 
     // delete the key-value pair with the minimum key rooted at h
     private Node deleteMin(Node h) { 
-        if (h.left == null)
+        if (h.left == null) {
             return null;
-
-        if (!isRed(h.left) && !isRed(h.left.left))
+        }
+        if (!isRed(h.left) && !isRed(h.left.left)) {
             h = moveRedLeft(h);
-
+        }
         h.left = deleteMin(h.left);
         return balance(h);
     }
@@ -399,9 +427,15 @@ public class RedBlackBST<Key extends Comparable<Key>, Value> implements IRedBlac
     private Node balance(Node h) {
         // assert (h != null);
 
-        if (isRed(h.right))                      h = rotateLeft(h);
-        if (isRed(h.left) && isRed(h.left.left)) h = rotateRight(h);
-        if (isRed(h.left) && isRed(h.right))     flipColors(h);
+        if (isRed(h.right)) {
+        	h = rotateLeft(h);
+        }
+        if (isRed(h.left) && isRed(h.left.left)) {
+        	h = rotateRight(h);
+        }
+        if (isRed(h.left) && isRed(h.right)) {
+        	flipColors(h);
+        }
 
         h.size = size(h.left) + size(h.right) + 1;
         return h;

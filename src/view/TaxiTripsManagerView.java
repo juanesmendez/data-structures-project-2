@@ -79,7 +79,9 @@ public class TaxiTripsManagerView
 
 				//1A	
 			case 2:
-
+				
+				fin=true;
+				sc.close();
 		
 				break;
 				
@@ -125,8 +127,7 @@ public class TaxiTripsManagerView
 				break;
  
 			case 13: //salir
-				fin=true;
-				sc.close();
+				
 				break;
 
 			}
@@ -141,31 +142,7 @@ public class TaxiTripsManagerView
 		System.out.println("---------------------Proyecto 1----------------------");
 		System.out.println("Cargar data (1C):");
 		System.out.println("1. Cargar toda la informacion dada una fuente de datos (small,medium, large).");
-
-		System.out.println("\nParte A:\n");
-		System.out.println("2.Obtenga una lista con todos los servicios de taxi ordenados cronologicamente por su fecha/hora inicial, \n"
-				+ " que se prestaron en un periodo de tiempo dado por una fecha/hora inicial y una fecha/hora final de consulta. (1A) ");
-		System.out.println("3.Dada una compania y un rango de fechas y horas, obtenga  el taxi que mas servicios inicio en dicho rango. (2A)");
-		System.out.println("4.Consulte la compania, dinero total obtenido, servicios prestados, distancia recorrida y tiempo total de servicios de un taxi dados su id y un rango de fechas y horas. (3A)");
-		System.out.println("5.Dada una fecha y un rango de horas, obtenga una lista de rangos de distancia en donde cada pocision contiene los servicios de taxis cuya distancia recorrida pertence al rango de distancia. (4A)\n");
-
-		System.out.println("Parte B: \n");
-		System.out.println("6. Obtenga el numero de companias que tienen al menos un taxi inscrito y el numero total de taxis que trabajan para al menos una compania. \n"
-				+ "Luego, genera una lista (en orden alfabetico) de las companias a las que estan inscritos los servicios de taxi. Para cada una, indique su nombre y el numero de taxis que tiene registrados. (1B)");
-		System.out.println("7. Dada una compania, una fecha/hora inicial y una fecha/hora final, buscar el taxi de la compania que mayor facturacion gener� en el tiempo dado. (2B)");
-		System.out.println("8. Dada una zona de la ciudad, una fecha/hora inicial y una fecha/hora final, dar la siguiente informacion: (3B) \n"
-				+ "   -Numero de servicios que iniciaron en la zona dada y terminaron en otra zona, junto con el valor total pagado por los usuarios. \n"
-				+ "   -Numero de servicios que iniciaron en otra zona y terminaron en la zona dada, junto con el valor total pagado por los usuarios. \n"
-				+ "   -Numero de servicios que iniciaron y terminaron en la zona dada, junto con el valor total pagado por los usuarios.");
-		System.out.println("9. Dado un rango de fechas, obtener la lista de todas las zonas, ordenadas por su identificador. Para cada zona, dar la lista de fechas dentro del rango (ordenadas cronol�gicamente) \n "
-				+ "y para cada fecha, dar el numero de servicios que se realizaron en dicha fecha. (4B)");
-
-
-		System.out.println("\nParte C: \n");
-		System.out.println("10. Dado un numero n, una fecha/hora inicial y una fecha/hora final, mostrar las n companias que mas servicios iniciaron dentro del rango. La lista debe estar ordenada descendentemente \n por el numero de servicios. Para cada compania, dar el nombre y el numero de servicios (2C)");
-		System.out.println("11. Para cada compania, dar el taxi mas rentable. La rentabilidad es dada por la relacion entre el dinero ganado y la distancia recorrida. (3C)");
-		System.out.println("12. Dado un taxi, dar el servicio resumen, resultado de haber comprimido su informacion segun el enunciado. (4C) ");
-		System.out.println("13. Salir");
+		System.out.println("2. Salir");
 		System.out.println("Type the option number for the task, then press enter: (e.g., 1):");
 
 	}

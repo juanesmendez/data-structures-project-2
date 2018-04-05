@@ -3,6 +3,7 @@ package model.logic;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Iterator;
 import java.util.StringTokenizer;
@@ -13,10 +14,15 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 import api.ITaxiTripsManager;
+import javafx.util.converter.LocalDateStringConverter;
+import model.data_structures.HashTable;
+import model.data_structures.IHashTable;
 import model.data_structures.IQueue;
+import model.data_structures.IRedBlackBST;
 import model.data_structures.IStack;
 import model.data_structures.LinkedList;
 import model.data_structures.List;
+import model.data_structures.RedBlackBST;
 import model.vo.*;
 
 public class TaxiTripsManager implements ITaxiTripsManager 
@@ -33,29 +39,49 @@ public class TaxiTripsManager implements ITaxiTripsManager
 	public static final String DIRECCION_LARGE_JSON_DIA_6 = "./data/taxi-trips-wrvz-psew-subset-large/taxi-trips-wrvz-psew-subset-07-02-2017.json";
 	public static final String DIRECCION_LARGE_JSON_DIA_7 = "./data/taxi-trips-wrvz-psew-subset-large/taxi-trips-wrvz-psew-subset-08-02-2017.json";
 	
-	private LinkedList<Service> services;
-	private LinkedList<Company> companies;
-	private LinkedList<Taxi> taxis;
+	
+	private IRedBlackBST<Company,LinkedList<Taxi>> treeCompanies; //Tree requirement 1A
+	private IHashTable<Integer,LinkedList<Service>> hashTableServicesByTripSeconds; //HashTable requirement 2A
+	private IRedBlackBST<Integer,LinkedList<Service>> treeServicesByMiles;; // Tree requirement 1B
+	private IHashTable<String,LinkedList<Service>> hashTableServicesByPickupDroppoffArea; //HashTable requirement 2B
+	private LinkedList<Taxi> taxis; //List requirement 1C
+	//private IHashTable<String,RedBlackBST<Service>> hashTableTreeOfServices; //HashTable requirement 2C
+	//IRedBlackBST<LocalDateTime,LinkedList<Service>> treeServicesByTimeRange; //Tree requirement 3C
+	
+	
 	
 	public TaxiTripsManager() {
-		this.services = new List<>();
-		this.companies = new List<>();
-		this.taxis = new List<>();
+		
+		this.treeCompanies = new RedBlackBST<Company,LinkedList<Taxi>>();
+		this.hashTableServicesByTripSeconds = new HashTable<Integer,LinkedList<Service>>();
+		this.treeServicesByMiles = new RedBlackBST<Integer, LinkedList<Service>>();
+		this.hashTableServicesByPickupDroppoffArea = new HashTable<String, LinkedList<Service>>();
+		this.taxis = new List<Taxi>();
+		//this. instantaite missing hashtable 2C
+		//Instantiate the missing balanced tree 3C
+		
 	}
 	
 
 	@Override //1C
-	public boolean cargarSistema(String direccionJsonArrar[]) 
+	public boolean cargarSistema(String serviceFilesArray[]) 
 	{
 		// TODO Auto-generated method stub
-		
 		boolean cargo = false;
 		JSONParser parser = new JSONParser();
 		int contServicios = 0;
 		
-		this.services = new List<>();
-		this.companies = new List<>();
-		this.taxis = new List<>();
+		
+		//I instantiate de data structures
+		
+		this.treeCompanies = new RedBlackBST<Company,LinkedList<Taxi>>();
+		this.hashTableServicesByTripSeconds = new HashTable<Integer,LinkedList<Service>>();
+		this.treeServicesByMiles = new RedBlackBST<Integer, LinkedList<Service>>();
+		this.hashTableServicesByPickupDroppoffArea = new HashTable<String, LinkedList<Service>>();
+		this.taxis = new List<Taxi>();
+		//Instantiate the hashtable missing
+		//Instantiate the missing balanced tree 3C
+		
 		for(int i=0;i<serviceFilesArray.length;i++) {
 
 
@@ -70,17 +96,17 @@ public class TaxiTripsManager implements ITaxiTripsManager
 
 				String companyName;
 				String dropoffCensusTract; // Verify if I need to change it to double
-				String dropoffCentroidLatitude;
+				double dropoffLatitude;
 				//Add declaration for saving dropoff_centroid_location in a variable
-				String dropoffCentroidLongitude;
+				double dropoffLongitude;
 				int dropoffCommunityArea;
 				float extras; //Check if leaving it as an integer or if it is better to change it to another type
 				float fare;
 				String paymentType;
 				String pickupCensusTract;
-				String pickupCentroidLatitude;
+				double pickupLatitude;
 				//Add variable declaration for saving pickup_centroid_location
-				String pickupCentroidLongitude;
+				double pickupLongitude;
 				int pickupCommunityArea;
 				String idTaxi;
 				float tips;
@@ -112,15 +138,23 @@ public class TaxiTripsManager implements ITaxiTripsManager
 					jsonObject = (JSONObject) iterator.next();
 					companyName = (String) jsonObject.get("company");
 					if(companyName == null) {
-						companyName = "Independent";
+						companyName = "Independent Owner";
 					}
 					//System.out.println("Company: "+companyName);
 					dropoffCensusTract = (String) jsonObject.get("dropoff_census_tract");
 					//System.out.println("Dropoff Census Tract: "+dropoffCensusTract);
-					dropoffCentroidLatitude = (String) jsonObject.get("dropoff_centroid_latitude");
+					String auxDropoffLatitude = (String) jsonObject.get("dropoff_centroid_latitude");
+					if(auxDropoffLatitude == null) {
+						auxDropoffLatitude = "0";
+					}
+					dropoffLatitude = Double.parseDouble(auxDropoffLatitude);
 					//System.out.println("Dropoff Centroid Latitude: "+dropoffCentroidLatitude);
 					//Add dropoff_centroid_location which is an array
-					dropoffCentroidLongitude = (String) jsonObject.get("dropoff_centroid_longitude");
+					String auxDropoffLongitude = (String) jsonObject.get("dropoff_centroid_longitude");
+					if(auxDropoffLongitude == null) {
+						auxDropoffLongitude = "0";
+					}
+					dropoffLongitude = Double.parseDouble(auxDropoffLongitude);
 					//System.out.println("Dropoff Centroid Longitude: "+dropoffCentroidLongitude);
 					aux = (String) jsonObject.get("dropoff_community_area");
 					if(aux!=null) {
@@ -146,10 +180,21 @@ public class TaxiTripsManager implements ITaxiTripsManager
 					//System.out.println("Payment Type: "+paymentType);
 					pickupCensusTract = (String) jsonObject.get("pickup_census_tract");
 					//System.out.println("Pickup Census Tract: "+pickupCensusTract);
-					pickupCentroidLatitude = (String) jsonObject.get("pickup_centroid_latitude");
+					
+					String auxPickupLatitude = (String) jsonObject.get("pickup_centroid_latitude");
+					if(auxPickupLatitude == null) {
+						auxPickupLatitude = "0";
+					}
+					
+					pickupLatitude = Double.parseDouble(auxPickupLatitude);
 					//System.out.println("Pickup Centroid Latitude: "+pickupCentroidLatitude);
 					// Add pickup_centroid_location which is an array
-					pickupCentroidLongitude = (String) jsonObject.get("pickup_centroid_longitude");
+					
+					String auxPickupLongitude = (String) jsonObject.get("pickup_centroid_longitude");
+					if(auxPickupLongitude == null) {
+						auxPickupLongitude="0";
+					}
+					pickupLongitude = Double.parseDouble(auxPickupLongitude);
 					//System.out.println("Pickup Centroid Longitude: "+pickupCentroidLongitude);
 					aux = (String) jsonObject.get("pickup_community_area");
 					if(aux!=null) {
@@ -244,18 +289,42 @@ public class TaxiTripsManager implements ITaxiTripsManager
 					//System.out.println("Trip total: "+tripTotal);
 
 					// From here I start CREATING WORLD CLASSES
-
-					//Add to list in alphabetical order.
-					company = this.addCompany(companyName); //Return object always gonna be different to null
-					taxi = this.addTaxi(idTaxi); //Return object always gonna be different to null
-					//Associating company object to taxi object and adding taxi to company's list:
+					company = new Company(companyName);
+					
+					taxi = new Taxi(idTaxi);
 					this.associateCompanyToTaxi(taxi, company);
-					this.addTaxiToCompany(taxi, company);
-
-					service = this.addService(idTrip, companyName, extras, fare, paymentType, tips, tolls, tripEnd, tripStart, dropoffCommunityArea, pickupCommunityArea, tripSeconds, tripMiles, tripTotal);
-					this.addServiceToTaxi(taxi, service);
+					
+					service = new Service(idTrip, companyName, extras, fare, paymentType, tips, tolls, tripEnd, tripStart, dropoffCommunityArea, pickupCommunityArea, tripSeconds, tripMiles, tripTotal, dropoffLatitude, dropoffLongitude, pickupLatitude, pickupLongitude);
 					this.associateTaxiToService(taxi, service);
-
+					
+					//Requirement 1A
+					LinkedList<Taxi> taxis = this.treeCompanies.get(company);
+					if(taxis == null) {
+						taxis = new List<Taxi>();
+						taxis.add(taxi);
+						this.treeCompanies.put(company, taxis);
+						LinkedList<Service> services = new List<Service>();
+						services.add(service);
+						taxi.getHashTableServicesByPickupArea().put(pickupCommunityArea, services);
+					}else {
+						Taxi taxiAux = taxis.get(taxi);
+						if(taxiAux == null) {
+							taxis.add(taxi);
+						}else {
+							taxi = taxiAux;
+						}
+						LinkedList<Service> services = taxi.getHashTableServicesByPickupArea().get(pickupCommunityArea);
+						if(services == null) {
+							services = new List<Service>();
+							services.add(service);
+							taxi.getHashTableServicesByPickupArea().put(pickupCommunityArea, services);
+						}else {
+							//Services never repeat so:
+							services.add(service);
+						}
+					}
+					
+					//Requirement 2A
 
 					//CONTINUAR CON VERIFICAR ORDENAMIENTO DE LISTA DE COMPAÑIAS 
 
@@ -277,8 +346,46 @@ public class TaxiTripsManager implements ITaxiTripsManager
 			System.out.println();
 			System.out.println("Se cargaron "+contServicios+ " datos del .JSON.");
 			System.out.println();
+			
+			//Imprimo el arbol inicial:
+			
+			Iterable<Company> keys = this.treeCompanies.keys();
+			
+			
+			for(Company c:keys) {
+				System.out.println(c.toString());
+				LinkedList<Taxi> taxis= this.treeCompanies.get(c);
+				for(Taxi t:taxis) {
+					System.out.println("Taxi ID: "+t.getTaxiId());
+					LinkedList<Service> services = t.getHashTableServicesByPickupArea().get(4);
+					if(services !=null) {
+						for(Service s:services) {
+							System.out.println(s.toString());
+							System.out.println();
+						}
+					}
+					
+				}
+				System.out.println();
+			}
 		}
 		return cargo;
 	}
 
+	
+	
+	
+	public void associateCompanyToTaxi(Taxi taxi,Company company) {
+
+		if(taxi.getCompany() == null) {
+			taxi.setCompany(company);
+		}
+
+	}
+	
+	public void associateTaxiToService(Taxi taxi, Service service) {
+		if(service.getTaxi() == null) {
+			service.setTaxi(taxi);
+		}
+	}
 }

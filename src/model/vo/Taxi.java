@@ -1,5 +1,7 @@
 package model.vo;
 
+import model.data_structures.HashTable;
+import model.data_structures.IHashTable;
 import model.data_structures.LinkedList;
 import model.data_structures.List;
 
@@ -8,13 +10,14 @@ public class Taxi implements Comparable<Taxi>{
 	private String taxiId;
 	private Company company;
 	private LinkedList<Service> services;
+	private IHashTable<Integer,LinkedList<Service>> hashTableServicesByPickupArea;
 	//Only used in requirement 2A
-	private int totalServicesInRange;
 	
 	public Taxi(String taxiId) {
 		this.taxiId = taxiId;
 		this.company = null;
 		this.services = new List<Service>();
+		this.hashTableServicesByPickupArea = new HashTable<Integer,LinkedList<Service>>();
 	}
 	
 	/**
@@ -37,18 +40,13 @@ public class Taxi implements Comparable<Taxi>{
 		this.company = company;
 	}
 
-	
-	
-	public int getTotalServicesInRange() {
-		return totalServicesInRange;
-	}
-
-	public void setTotalServicesInRange(int totalServicesInRange) {
-		this.totalServicesInRange = totalServicesInRange;
-	}
 
 	public LinkedList<Service> getServices() {
 		return services;
+	}
+	
+	public IHashTable<Integer, LinkedList<Service>> getHashTableServicesByPickupArea() {
+		return hashTableServicesByPickupArea;
 	}
 
 	@Override

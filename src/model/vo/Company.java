@@ -37,4 +37,12 @@ public class Company implements Comparable<Company>{
 		return "Company Name: "+this.name;
 	}
 
+	
+	@Override
+	public int hashCode() {
+		// TODO Auto-generated method stub
+		int hash;
+		hash = 31* this.name.hashCode();
+		return hash;
+	}
 }

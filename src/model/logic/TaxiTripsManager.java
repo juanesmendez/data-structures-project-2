@@ -357,13 +357,23 @@ public class TaxiTripsManager implements ITaxiTripsManager
 				LinkedList<Taxi> taxis= this.treeCompanies.get(c);
 				for(Taxi t:taxis) {
 					System.out.println("Taxi ID: "+t.getTaxiId());
+					Iterable<Integer> keysInteger = t.getHashTableServicesByPickupArea().keys();
+					for(Integer in:keysInteger) {
+						LinkedList<Service> services = t.getHashTableServicesByPickupArea().get(in);
+						System.out.println("CODIGO AREA:"+in.toString());
+						for(Service s:services) {
+							System.out.println(s.toString());
+							System.out.println();
+						}
+					}
+					/*
 					LinkedList<Service> services = t.getHashTableServicesByPickupArea().get(4);
 					if(services !=null) {
 						for(Service s:services) {
 							System.out.println(s.toString());
 							System.out.println();
 						}
-					}
+					}*/
 					
 				}
 				System.out.println();
@@ -387,5 +397,56 @@ public class TaxiTripsManager implements ITaxiTripsManager
 		if(service.getTaxi() == null) {
 			service.setTaxi(taxi);
 		}
+	}
+
+
+	@Override
+	public LinkedList<Taxi> A1TaxiConMasServiciosEnZonaParaCompania(int zonaInicio, String compania) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+	@Override
+	public LinkedList<Service> A2ServiciosPorDuracion(int duracion) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+	@Override
+	public LinkedList<Service> B1ServiciosPorDistancia(double distanciaMinima, double distanciaMaxima) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+	@Override
+	public LinkedList<Service> B2ServiciosPorZonaRecogidaYLlegada(int zonaInicio, int zonaFinal, String fechaI,
+			String fechaF, String horaI, String horaF) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+	@Override
+	public Taxi[] R1C_OrdenarTaxisPorPuntos() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+	@Override
+	public LinkedList<Service> R2C_LocalizacionesGeograficas(String taxiIDReq2C, double millas, double latitud,
+			double longitud) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+	@Override
+	public LinkedList<Service> R3C_ServiciosEn15Minutos(String fecha, String hora) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

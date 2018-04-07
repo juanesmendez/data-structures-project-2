@@ -121,6 +121,24 @@ public class Service implements Comparable<Service> {
 		return tripTotal;
 	}
 
+	
+	
+	public double getDropoffLatitude() {
+		return dropoffLatitude;
+	}
+
+	public double getDropoffLongitude() {
+		return dropoffLongitude;
+	}
+
+	public double getPickupLatitude() {
+		return pickupLatitude;
+	}
+
+	public double getPickupLongitude() {
+		return pickupLongitude;
+	}
+
 	@Override
 	public String toString() {
 		// TODO Auto-generated method stub

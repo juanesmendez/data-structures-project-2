@@ -241,6 +241,8 @@ public class TaxiTripsManagerView
 				// TODO Si el conjunto ordenado tiene menos de 10 taxis, hay que mostrar todos taxis en orden ascendente de puntos. 
 				//      Por cada taxi mostrar su Id y sus puntos
 				//
+				//      Si el conjunto ordenado tiene 10 taxis o mas, hay que mostrar los 5 primeros taxis y los 5 ultimos taxis resultado del ordenamiento. 
+				//      Por cada taxi mostrar su Id y sus puntos
 				if(taxis.length < 10) {
 					for(int i=0;i<taxis.length;i++) {
 						System.out.println("TAXI ID: "+ taxis[i].getTaxiId());
@@ -260,8 +262,6 @@ public class TaxiTripsManagerView
 					}
 					
 				}
-				//      Si el conjunto ordenado tiene 10 taxis o mas, hay que mostrar los 5 primeros taxis y los 5 ultimos taxis resultado del ordenamiento. 
-				//      Por cada taxi mostrar su Id y sus puntos
 				break;
 
 			case 7: //2C

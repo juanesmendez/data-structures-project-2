@@ -1,13 +1,14 @@
 package test;
 
 import model.vo.Company;
+import model.vo.MyDateTime;
 
 public class Test {
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 
-		
+		/*
 		Integer e = 3;
 		System.out.println(e.hashCode());
 		
@@ -29,7 +30,14 @@ public class Test {
 		
 		if(c1.compareTo(c2) == 0) {
 			System.out.println("TRUE");
-		}
+		}*/
+		
+		MyDateTime datetime = new MyDateTime(2015, 8, 10, 10, 0, 0, 0);
+		
+		MyDateTime datetime2 = new MyDateTime(2015, 8, 10, 10, 0, 0, 0);
+		
+		System.out.println(datetime.compareTo(datetime2));
+		System.out.println(datetime.toString());
 	}
 
 }

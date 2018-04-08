@@ -48,7 +48,7 @@ public class TaxiTripsManager implements ITaxiTripsManager
 	private IHashTable<String,LinkedList<Service>> hashTableServicesByPickupDroppoffArea; //HashTable requirement 2B
 	private LinkedList<Taxi> taxis; //List requirement 1C
 	//private IHashTable<String,RedBlackBST<Service>> hashTableTreeOfServices; //HashTable requirement 2C
-	//IRedBlackBST<LocalDateTime,LinkedList<Service>> treeServicesByTimeRange; //Tree requirement 3C
+	private IRedBlackBST<MyDateTime,LinkedList<Service>> treeServicesByTimeRange; //Tree requirement 3C
 	
 	
 	
@@ -60,7 +60,7 @@ public class TaxiTripsManager implements ITaxiTripsManager
 		this.hashTableServicesByPickupDroppoffArea = new HashTable<String, LinkedList<Service>>();
 		this.taxis = new List<Taxi>();
 		//this. instantaite missing hashtable 2C
-		//Instantiate the missing balanced tree 3C
+		this.treeServicesByTimeRange = new RedBlackBST<MyDateTime, LinkedList<Service>>();
 		
 	}
 	
@@ -82,7 +82,7 @@ public class TaxiTripsManager implements ITaxiTripsManager
 		this.hashTableServicesByPickupDroppoffArea = new HashTable<String, LinkedList<Service>>();
 		this.taxis = new List<Taxi>();
 		//Instantiate the hashtable missing
-		//Instantiate the missing balanced tree 3C
+		this.treeServicesByTimeRange = new RedBlackBST<MyDateTime, LinkedList<Service>>();
 		
 		for(int i=0;i<serviceFilesArray.length;i++) {
 
@@ -119,6 +119,7 @@ public class TaxiTripsManager implements ITaxiTripsManager
 				int tripSeconds;
 				LocalDateTime tripStart;
 				float tripTotal;
+				MyDateTime tripStartAux;
 
 
 				String auxDate;
@@ -263,6 +264,8 @@ public class TaxiTripsManager implements ITaxiTripsManager
 
 					if(auxDate == null) {
 						tripStart = LocalDateTime.now();
+						//Trip start Aux is auxiliary date time object instantiated with MyDateTime class implementing comparable:
+						tripStartAux = new MyDateTime(tripStart.getYear(),tripStart.getMonthValue(),tripStart.getDayOfMonth(),tripStart.getHour(),tripStart.getMinute(),tripStart.getSecond(),tripStart.getNano());
 					}else {
 						StringTokenizer tokenizer;
 						tokenizer = new StringTokenizer(auxDate, "-");
@@ -280,6 +283,9 @@ public class TaxiTripsManager implements ITaxiTripsManager
 						seconds = Integer.parseInt(tokenizer.nextToken());
 						nanoseconds = Integer.parseInt(tokenizer.nextToken());
 						tripStart = LocalDateTime.of(year, month, day, hour, minutes, seconds, nanoseconds);
+						
+						//Trip start Aux is auxiliary date time object instantiated with MyDateTime class implementing comparable:
+						tripStartAux = new MyDateTime(year, month, day, hour, minutes, seconds, nanoseconds);
 					}
 
 					//System.out.println("Trip start timestamp: " +tripStart.toString());
@@ -296,7 +302,7 @@ public class TaxiTripsManager implements ITaxiTripsManager
 					taxi = new Taxi(idTaxi);
 					this.associateCompanyToTaxi(taxi, company);
 					
-					service = new Service(idTrip, companyName, extras, fare, paymentType, tips, tolls, tripEnd, tripStart, dropoffCommunityArea, pickupCommunityArea, tripSeconds, tripMiles, tripTotal, dropoffLatitude, dropoffLongitude, pickupLatitude, pickupLongitude);
+					service = new Service(idTrip, companyName, extras, fare, paymentType, tips, tolls, tripEnd, tripStart, dropoffCommunityArea, pickupCommunityArea, tripSeconds, tripMiles, tripTotal, dropoffLatitude, dropoffLongitude, pickupLatitude, pickupLongitude,tripStartAux);
 					this.associateTaxiToService(taxi, service);
 					
 					//Requirement 1A
@@ -308,6 +314,9 @@ public class TaxiTripsManager implements ITaxiTripsManager
 					
 					//Requirement 1C
 					this.taxis.add(taxi);
+					
+					//Requirement 3C
+					this.constructTreeR3C(service, tripStartAux);
 					
 					//CONTINUAR CON VERIFICAR ORDENAMIENTO DE LISTA DE COMPAÑIAS 
 					
@@ -330,43 +339,50 @@ public class TaxiTripsManager implements ITaxiTripsManager
 			System.out.println("Se cargaron "+contServicios+ " datos del .JSON.");
 			System.out.println();
 			
-			//Imprimo el arbol inicial:
+		
 			
 			
-			/*
-			Iterable<Company> keys = this.treeCompanies.keys();
 			
-			
-			for(Company c:keys) {
-				System.out.println(c.toString());
-				LinkedList<Taxi> taxis= this.treeCompanies.get(c);
-				for(Taxi t:taxis) {
-					System.out.println("TAXI ID: "+t.getTaxiId());
-					System.out.println();
-					Iterable<Integer> keysInteger = t.getHashTableServicesByPickupArea().keys();
-					for(Integer in:keysInteger) {
-						LinkedList<Service> services = t.getHashTableServicesByPickupArea().get(in);
-						System.out.println("CODIGO AREA:"+in.toString());
-						for(Service s:services) {
-							System.out.println(s.toString());
-							System.out.println();
-						}
-					}
-					
-				}
+		}
+		
+		//Imprimo el arbol inicial:
+		
+		
+		/*
+		Iterable<Company> keys = this.treeCompanies.keys();
+		
+		
+		for(Company c:keys) {
+			System.out.println(c.toString());
+			LinkedList<Taxi> taxis= this.treeCompanies.get(c);
+			for(Taxi t:taxis) {
+				System.out.println("TAXI ID: "+t.getTaxiId());
 				System.out.println();
-			}
-			*/
-			if(this.hashTableServicesByTripSeconds.keys() != null) {
-				Iterable<Integer> keys = this.hashTableServicesByTripSeconds.keys();
-				for(Integer inte:keys) {
-					System.out.println(inte.toString());
-					
+				Iterable<Integer> keysInteger = t.getHashTableServicesByPickupArea().keys();
+				for(Integer in:keysInteger) {
+					LinkedList<Service> services = t.getHashTableServicesByPickupArea().get(in);
+					System.out.println("CODIGO AREA:"+in.toString());
+					for(Service s:services) {
+						System.out.println(s.toString());
+						System.out.println();
+					}
 				}
-			}else {
-				System.out.println("HASH NULA!!!!");
+				
 			}
-			
+			System.out.println();
+		}
+		*/
+		if(this.hashTableServicesByTripSeconds.keys() != null) {
+			Iterable<Integer> keys = this.hashTableServicesByTripSeconds.keys();
+			int contadoooor=0;
+			for(Integer inte:keys) {
+				System.out.println(inte.toString());
+				contadoooor++;
+				
+			}
+			System.out.println("#LLAVES EN HASH: "+ contadoooor);
+		}else {
+			System.out.println("HASH NULA!!!!");
 		}
 		return cargo;
 	}
@@ -410,6 +426,18 @@ public class TaxiTripsManager implements ITaxiTripsManager
 			services = new List<Service>();
 			services.add(service);
 			this.hashTableServicesByTripSeconds.put(key, services);
+		}else {
+			services.add(service);
+		}
+	}
+	
+	public void constructTreeR3C(Service service,MyDateTime tripStartAux ) {
+		LinkedList<Service> services = this.treeServicesByTimeRange.get(tripStartAux);
+		
+		if(services == null) {
+			services = new List<Service>();
+			services.add(service);
+			this.treeServicesByTimeRange.put(tripStartAux, services);
 		}else {
 			services.add(service);
 		}
@@ -551,6 +579,24 @@ public class TaxiTripsManager implements ITaxiTripsManager
 	@Override
 	public LinkedList<Service> R3C_ServiciosEn15Minutos(String fecha, String hora) {
 		// TODO Auto-generated method stub
-		return null;
+		StringTokenizer tokenizer = new StringTokenizer(fecha, "-");
+		int year = Integer.parseInt(tokenizer.nextToken());
+		int month = Integer.parseInt(tokenizer.nextToken());
+		int day = Integer.parseInt(tokenizer.nextToken());
+		tokenizer = new StringTokenizer(hora, ":");
+		int hour = Integer.parseInt(tokenizer.nextToken());
+		int minutes = Integer.parseInt(tokenizer.nextToken());
+		String aux=tokenizer.nextToken();
+		tokenizer = new StringTokenizer(aux, ".");
+		int seconds = Integer.parseInt(tokenizer.nextToken());
+		int nanoseconds = Integer.parseInt(tokenizer.nextToken());
+		
+		int minutesAux = minutes - (minutes%15);
+		//seconds and nanoseconds will always be cero because of the way te information was rounded by the government
+		MyDateTime datetimeToSearch = new MyDateTime(year, month, day, hour, minutesAux, seconds, nanoseconds);
+		
+		LinkedList<Service> services = this.treeServicesByTimeRange.get(datetimeToSearch);
+		
+		return services;
 	}
 }

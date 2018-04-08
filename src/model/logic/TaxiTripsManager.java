@@ -5,6 +5,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.StringTokenizer;
 
@@ -298,36 +299,15 @@ public class TaxiTripsManager implements ITaxiTripsManager
 					this.associateTaxiToService(taxi, service);
 					
 					//Requirement 1A
-					LinkedList<Taxi> taxis = this.treeCompanies.get(company);
-					if(taxis == null) {
-						taxis = new List<Taxi>();
-						taxis.add(taxi);
-						this.treeCompanies.put(company, taxis);
-						LinkedList<Service> services = new List<Service>();
-						services.add(service);
-						taxi.getHashTableServicesByPickupArea().put(pickupCommunityArea, services);
-					}else {
-						Taxi taxiAux = taxis.get(taxi);
-						if(taxiAux == null) {
-							taxis.add(taxi);
-						}else {
-							taxi = taxiAux;
-						}
-						LinkedList<Service> services = taxi.getHashTableServicesByPickupArea().get(pickupCommunityArea);
-						if(services == null) {
-							services = new List<Service>();
-							services.add(service);
-							taxi.getHashTableServicesByPickupArea().put(pickupCommunityArea, services);
-						}else {
-							//Services never repeat so:
-							services.add(service);
-						}
-					}
+					this.constructTreeR1A(company, taxi, service, pickupCommunityArea);
 					
 					//Requirement 2A
+					
+					this.constructHashTableR2A(service);
+					
 
 					//CONTINUAR CON VERIFICAR ORDENAMIENTO DE LISTA DE COMPAÑIAS 
-
+					
 					contServicios++;
 					//System.out.println();
 				}
@@ -349,6 +329,8 @@ public class TaxiTripsManager implements ITaxiTripsManager
 			
 			//Imprimo el arbol inicial:
 			
+			
+			/*
 			Iterable<Company> keys = this.treeCompanies.keys();
 			
 			
@@ -356,7 +338,8 @@ public class TaxiTripsManager implements ITaxiTripsManager
 				System.out.println(c.toString());
 				LinkedList<Taxi> taxis= this.treeCompanies.get(c);
 				for(Taxi t:taxis) {
-					System.out.println("Taxi ID: "+t.getTaxiId());
+					System.out.println("TAXI ID: "+t.getTaxiId());
+					System.out.println();
 					Iterable<Integer> keysInteger = t.getHashTableServicesByPickupArea().keys();
 					for(Integer in:keysInteger) {
 						LinkedList<Service> services = t.getHashTableServicesByPickupArea().get(in);
@@ -366,24 +349,68 @@ public class TaxiTripsManager implements ITaxiTripsManager
 							System.out.println();
 						}
 					}
-					/*
-					LinkedList<Service> services = t.getHashTableServicesByPickupArea().get(4);
-					if(services !=null) {
-						for(Service s:services) {
-							System.out.println(s.toString());
-							System.out.println();
-						}
-					}*/
 					
 				}
 				System.out.println();
 			}
+			*/
+			if(this.hashTableServicesByTripSeconds.keys() != null) {
+				Iterable<Integer> keys = this.hashTableServicesByTripSeconds.keys();
+				for(Integer inte:keys) {
+					System.out.println(inte.toString());
+					
+				}
+			}else {
+				System.out.println("HASH NULA!!!!");
+			}
+			
 		}
 		return cargo;
 	}
 
+	public void constructTreeR1A(Company company, Taxi taxi, Service service, int pickupCommunityArea) {
+		LinkedList<Taxi> taxis = this.treeCompanies.get(company);
+		if(taxis == null) {
+			taxis = new List<Taxi>();
+			taxis.add(taxi);
+			this.treeCompanies.put(company, taxis);
+			LinkedList<Service> services = new List<Service>();
+			Comparator comparator = new Service.TripStartComparator();
+			services.add(service, comparator);
+			//services.add(service);
+			taxi.getHashTableServicesByPickupArea().put(pickupCommunityArea, services);
+		}else {
+			Taxi taxiAux = taxis.get(taxi);
+			if(taxiAux == null) {
+				taxis.add(taxi);
+			}else {
+				taxi = taxiAux;
+			}
+			LinkedList<Service> services = taxi.getHashTableServicesByPickupArea().get(pickupCommunityArea);
+			Comparator comparator = new Service.TripStartComparator();
+			if(services == null) {
+				services = new List<Service>();
+				services.add(service,comparator);
+				taxi.getHashTableServicesByPickupArea().put(pickupCommunityArea, services);
+			}else {
+				//Services never repeat so:
+				services.add(service,comparator);
+			}
+		}
+	}
 	
-	
+	public void constructHashTableR2A(Service service) {
+		int key = service.getTripSeconds() % 60;
+		key = service.getTripSeconds() - key;
+		LinkedList<Service> services = this.hashTableServicesByTripSeconds.get(key);
+		if(services == null) {
+			services = new List<Service>();
+			services.add(service);
+			this.hashTableServicesByTripSeconds.put(key, services);
+		}else {
+			services.add(service);
+		}
+	}
 	
 	public void associateCompanyToTaxi(Taxi taxi,Company company) {
 
@@ -403,14 +430,52 @@ public class TaxiTripsManager implements ITaxiTripsManager
 	@Override
 	public LinkedList<Taxi> A1TaxiConMasServiciosEnZonaParaCompania(int zonaInicio, String compania) {
 		// TODO Auto-generated method stub
-		return null;
+		Company company = new Company(compania);
+		LinkedList<Taxi> taxis = this.treeCompanies.get(company);
+		int mayor = 0;
+		Taxi mayorTaxi = null;
+		LinkedList<Taxi> taxisResultantes = new List<Taxi>();
+		if(taxis != null) {
+			for(Taxi t:taxis) {
+				LinkedList<Service> services = t.getHashTableServicesByPickupArea().get(zonaInicio);
+				if(services !=null) {
+					int size = services.size();
+					if(size>mayor) {
+						mayor = size;
+						mayorTaxi = t;
+					}
+				}
+				
+			}
+			if(mayorTaxi !=null) {
+				for(Taxi t:taxis) {
+					if(t.getHashTableServicesByPickupArea().get(zonaInicio) !=null) {
+						if(t.getHashTableServicesByPickupArea().get(zonaInicio).size() == mayorTaxi.getHashTableServicesByPickupArea().get(zonaInicio).size()) {
+							taxisResultantes.add(t);
+						}
+					}
+				}
+				
+			}
+		}else {
+			return null;
+		}
+		
+		
+		return taxisResultantes;
 	}
 
 
 	@Override
 	public LinkedList<Service> A2ServiciosPorDuracion(int duracion) {
 		// TODO Auto-generated method stub
-		return null;
+		LinkedList<Service> services=null;
+		
+		duracion = duracion - (duracion%60);
+		services = this.hashTableServicesByTripSeconds.get(duracion);
+		
+		
+		return services;
 	}
 
 

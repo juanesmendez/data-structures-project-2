@@ -100,9 +100,20 @@ public class TaxiTripsManagerView
 				//Req 1A
 				// Mostrar el Id del (de los) taxi(s) y fecha/hora de inicio de sus servicios iniciando en la zona dada
 				LinkedList<Taxi> listaTaxis = Controller.R1A(idZona, companiaReq1A);
-				for(Taxi taxi: listaTaxis){
-					taxi.toString();
+				
+				if(listaTaxis !=null) {
+					for(Taxi taxi: listaTaxis){
+						System.out.println("TAXI ID: "+ taxi.getTaxiId());
+						LinkedList<Service> services = taxi.getHashTableServicesByPickupArea().get(idZona);
+						System.out.println("Size list: "+services.size());
+						for(Service s:services) {
+							System.out.println("\tTrip ID: "+ s.getTripId());
+							System.out.println("\tTrip start: "+s.getTripStart().toString());
+							System.out.println();
+						}
+					}
 				}
+				
 
 				break;
 
@@ -118,7 +129,7 @@ public class TaxiTripsManagerView
 					System.err.println("Duracion invalida");
 					break;
 				}
-
+				System.out.println("DURACION: "+duracion);
 				// Req 2A
 				LinkedList<Service> listaServicios = Controller.R2A(duracion);
 				for(Service s : listaServicios){

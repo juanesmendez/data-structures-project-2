@@ -24,6 +24,7 @@ import model.data_structures.IStack;
 import model.data_structures.LinkedList;
 import model.data_structures.List;
 import model.data_structures.RedBlackBST;
+import model.sort.Heap;
 import model.vo.*;
 
 public class TaxiTripsManager implements ITaxiTripsManager 
@@ -305,7 +306,9 @@ public class TaxiTripsManager implements ITaxiTripsManager
 					
 					this.constructHashTableR2A(service);
 					
-
+					//Requirement 1C
+					this.taxis.add(taxi);
+					
 					//CONTINUAR CON VERIFICAR ORDENAMIENTO DE LISTA DE COMPAÑIAS 
 					
 					contServicios++;
@@ -497,7 +500,43 @@ public class TaxiTripsManager implements ITaxiTripsManager
 	@Override
 	public Taxi[] R1C_OrdenarTaxisPorPuntos() {
 		// TODO Auto-generated method stub
-		return null;
+		double totalMiles=0;
+		double totalIncome = 0;
+		int numServices=0;
+		double puntaje=0;
+		Taxi[] arrayTaxis = new Taxi[this.taxis.size()];
+		int pos=0;
+		for(Taxi taxi: this.taxis) {
+			arrayTaxis[pos] = taxi;
+			pos++;
+			Iterable<Integer> keys = taxi.getHashTableServicesByPickupArea().keys();
+			for(Integer i: keys) {
+				LinkedList<Service> services= taxi.getHashTableServicesByPickupArea().get(i);
+				for(Service s:services) {
+					if(s.getTripMiles() > 0 && s.getTripTotal() >0) {
+						numServices++;
+						totalMiles = totalMiles+s.getTripMiles();
+						totalIncome = totalIncome + s.getTripTotal();
+					}
+				}
+			}
+			
+			if((totalIncome != 0) && (totalMiles!=0)) {
+				puntaje = (totalIncome / totalMiles) * numServices;
+			}else {
+				puntaje = 0;
+			}
+			taxi.setPuntaje((float)puntaje);
+			totalIncome=0;
+			totalMiles=0;
+			numServices = 0;
+			puntaje = 0;
+		}
+		
+		Heap.sort(arrayTaxis);
+		
+		
+		return arrayTaxis;
 	}
 
 

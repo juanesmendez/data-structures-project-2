@@ -12,12 +12,14 @@ public class Taxi implements Comparable<Taxi>{
 	private LinkedList<Service> services;
 	private IHashTable<Integer,LinkedList<Service>> hashTableServicesByPickupArea;
 	//Only used in requirement 2A
+	private float puntaje;
 	
 	public Taxi(String taxiId) {
 		this.taxiId = taxiId;
 		this.company = null;
 		this.services = new List<Service>();
 		this.hashTableServicesByPickupArea = new HashTable<Integer,LinkedList<Service>>();
+		this.puntaje = 0;
 	}
 	
 	/**
@@ -48,13 +50,22 @@ public class Taxi implements Comparable<Taxi>{
 	public IHashTable<Integer, LinkedList<Service>> getHashTableServicesByPickupArea() {
 		return hashTableServicesByPickupArea;
 	}
+	
+
+	public float getPuntaje() {
+		return puntaje;
+	}
+
+	public void setPuntaje(float puntaje) {
+		this.puntaje = puntaje;
+	}
 
 	@Override
 	public int compareTo(Taxi o) {
 		// TODO Auto-generated method stub
-		if(this.taxiId.compareTo(o.getTaxiId())<0) {
+		if(this.puntaje < o.getPuntaje()) {
 			return -1;
-		}else if(this.taxiId.compareTo(o.getTaxiId())>0) {
+		}else if(this.puntaje > o.getPuntaje()) {
 			return 1;
 		}
 		return 0;

@@ -24,6 +24,7 @@ public class Service implements Comparable<Service> {
 	private double pickupLatitude;
 	private double pickupLongitude;
 	private MyDateTime tripStartAux;
+	private MyDateTime tripEndAux;
 	/**
 	 * @return id - Trip_id
 	 */
@@ -31,7 +32,7 @@ public class Service implements Comparable<Service> {
 	
 	public Service(String tripId, String company, float extras, float fare, String paymentType, float tips,
 			float tolls, LocalDateTime tripEnd, LocalDateTime tripStart, int dropoffCommunityArea,
-			int pickupCommunityArea, int tripSeconds, double tripMiles, double tripTotal, double dropoffLatitude, double dropoffLongitude, double pickupLatitude, double pickupLongitude,MyDateTime tripStartAux) {
+			int pickupCommunityArea, int tripSeconds, double tripMiles, double tripTotal, double dropoffLatitude, double dropoffLongitude, double pickupLatitude, double pickupLongitude,MyDateTime tripStartAux, MyDateTime tripEndAux) {
 		this.tripId = tripId;
 		this.taxi = null;
 		this.company = company;
@@ -52,6 +53,7 @@ public class Service implements Comparable<Service> {
 		this.pickupLatitude = pickupLatitude;
 		this.pickupLongitude = pickupLongitude;
 		this.tripStartAux = tripStartAux;
+		this.tripEndAux = tripEndAux;
 	}
 
 	/**
@@ -143,6 +145,11 @@ public class Service implements Comparable<Service> {
 
 	public MyDateTime getTripStartAux() {
 		return tripStartAux;
+	}
+	
+	public MyDateTime getTripEndAux ()
+	{
+		return tripEndAux;
 	}
 
 	@Override

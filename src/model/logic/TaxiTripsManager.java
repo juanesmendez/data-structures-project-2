@@ -5,6 +5,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.StringTokenizer;
@@ -13,6 +14,8 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+
+import com.sun.javafx.binding.StringFormatter;
 
 import api.ITaxiTripsManager;
 import javafx.util.converter.LocalDateStringConverter;
@@ -120,6 +123,7 @@ public class TaxiTripsManager implements ITaxiTripsManager
 				LocalDateTime tripStart;
 				float tripTotal;
 				MyDateTime tripStartAux;
+				MyDateTime tripEndAux;
 
 
 				String auxDate;
@@ -227,6 +231,7 @@ public class TaxiTripsManager implements ITaxiTripsManager
 					if(auxDate == null) {
 						tripEnd = LocalDateTime.now(); //Assigning actual date
 						//	System.out.println("Trip end timestamp: NO HAY INFORMACION");
+						tripEndAux = new MyDateTime(tripEnd.getYear(),tripEnd.getMonthValue(),tripEnd.getDayOfMonth(),tripEnd.getHour(),tripEnd.getMinute(),tripEnd.getSecond(),tripEnd.getNano());
 					}else {
 						StringTokenizer tokenizer = new StringTokenizer(auxDate, "-");
 						year = Integer.parseInt(tokenizer.nextToken());
@@ -244,6 +249,8 @@ public class TaxiTripsManager implements ITaxiTripsManager
 						nanoseconds = Integer.parseInt(tokenizer.nextToken());
 						tripEnd = LocalDateTime.of(year, month, day, hour, minutes, seconds, nanoseconds);
 						//	System.out.println("Trip end timestamp: "+tripEnd.toString());
+						tripEndAux = new MyDateTime(year, month, day, hour, minutes, seconds, nanoseconds);
+						
 					}
 
 					idTrip = (String) jsonObject.get("trip_id");
@@ -287,6 +294,8 @@ public class TaxiTripsManager implements ITaxiTripsManager
 						//Trip start Aux is auxiliary date time object instantiated with MyDateTime class implementing comparable:
 						tripStartAux = new MyDateTime(year, month, day, hour, minutes, seconds, nanoseconds);
 					}
+					
+					
 
 					//System.out.println("Trip start timestamp: " +tripStart.toString());
 					aux = (String) jsonObject.get("trip_total");
@@ -302,7 +311,7 @@ public class TaxiTripsManager implements ITaxiTripsManager
 					taxi = new Taxi(idTaxi);
 					this.associateCompanyToTaxi(taxi, company);
 					
-					service = new Service(idTrip, companyName, extras, fare, paymentType, tips, tolls, tripEnd, tripStart, dropoffCommunityArea, pickupCommunityArea, tripSeconds, tripMiles, tripTotal, dropoffLatitude, dropoffLongitude, pickupLatitude, pickupLongitude,tripStartAux);
+					service = new Service(idTrip, companyName, extras, fare, paymentType, tips, tolls, tripEnd, tripStart, dropoffCommunityArea, pickupCommunityArea, tripSeconds, tripMiles, tripTotal, dropoffLatitude, dropoffLongitude, pickupLatitude, pickupLongitude,tripStartAux, tripEndAux);
 					this.associateTaxiToService(taxi, service);
 					
 					//Requirement 1A
@@ -311,6 +320,14 @@ public class TaxiTripsManager implements ITaxiTripsManager
 					//Requirement 2A
 					
 					this.constructHashTableR2A(service);
+					
+					//Requirement 1B
+					
+					this.constructTreeR1B(service);
+					
+					//Requirement 2B
+					
+					this.constructHashTable2B(service);
 					
 					//Requirement 1C
 					this.taxis.add(taxi);
@@ -430,6 +447,42 @@ public class TaxiTripsManager implements ITaxiTripsManager
 			services.add(service);
 		}
 	}
+	public void constructTreeR1B (Service service)
+	{
+		
+		Integer key = (int) (service.getTripMiles() % 1);
+		key = (int) (service.getTripMiles () - key);
+		LinkedList<Service> services = this.treeServicesByMiles.get(key);
+		
+		if (services == null)
+		{
+			services = new List<Service>();
+			services.add(service);
+			this.treeServicesByMiles.put(key, services);
+
+		}
+		else 
+		{
+			services.add(service);
+		}
+		
+	}
+	public void constructHashTable2B (Service service)
+	{
+		String key = service.getPickupCommunityArea()+"-"+service.getDropoffCommunityArea();
+		LinkedList <Service> services = this.hashTableServicesByPickupDroppoffArea.get(key);
+		
+		if (services == null)
+		{
+			services = new List <Service>();
+			services.add(service);
+			this.hashTableServicesByPickupDroppoffArea.put(key, services);
+		}
+		else
+		{
+			services.add(service);
+		}
+	}
 	
 	public void constructTreeR3C(Service service,MyDateTime tripStartAux ) {
 		LinkedList<Service> services = this.treeServicesByTimeRange.get(tripStartAux);
@@ -513,7 +566,14 @@ public class TaxiTripsManager implements ITaxiTripsManager
 	@Override
 	public LinkedList<Service> B1ServiciosPorDistancia(double distanciaMinima, double distanciaMaxima) {
 		// TODO Auto-generated method stub
-		return null;
+		LinkedList <Service> services = null;
+		
+		distanciaMinima = distanciaMinima - (distanciaMinima % 1);
+		distanciaMaxima = distanciaMaxima - (distanciaMaxima % 1);
+		
+		services = this.treeServicesByMiles.get((int) distanciaMinima);
+		
+		return services;
 	}
 
 
@@ -521,7 +581,62 @@ public class TaxiTripsManager implements ITaxiTripsManager
 	public LinkedList<Service> B2ServiciosPorZonaRecogidaYLlegada(int zonaInicio, int zonaFinal, String fechaI,
 			String fechaF, String horaI, String horaF) {
 		// TODO Auto-generated method stub
-		return null;
+		LinkedList <Service> services = null;
+		LinkedList <Service> respuesta =null;
+		
+		String key = zonaInicio+"-"+zonaFinal ;
+		
+		services = this.hashTableServicesByPickupDroppoffArea.get(key);
+		
+		StringTokenizer tokenizer = new StringTokenizer(fechaI, "-");
+		int year = Integer.parseInt(tokenizer.nextToken());
+		int month = Integer.parseInt(tokenizer.nextToken());
+		int day = Integer.parseInt(tokenizer.nextToken());
+		
+		tokenizer = new StringTokenizer(horaI, ":");
+		int hour = Integer.parseInt(tokenizer.nextToken());
+		int minutes = Integer.parseInt(tokenizer.nextToken());
+		
+		String aux=tokenizer.nextToken();
+		tokenizer = new StringTokenizer(aux, ".");
+		int seconds = Integer.parseInt(tokenizer.nextToken());
+		int nanoseconds = Integer.parseInt(tokenizer.nextToken());
+		
+		StringTokenizer tokenizer2 = new StringTokenizer(fechaF, "-");
+		int year2 = Integer.parseInt(tokenizer2.nextToken());
+		int month2 = Integer.parseInt(tokenizer2.nextToken());
+		int day2 = Integer.parseInt(tokenizer2.nextToken());
+		
+		tokenizer2 = new StringTokenizer(horaF, ":");
+		int hour2 = Integer.parseInt(tokenizer2.nextToken());
+		int minutes2 = Integer.parseInt(tokenizer2.nextToken());
+		
+		String aux2 = tokenizer2.nextToken();
+		tokenizer2 = new StringTokenizer(aux, ".");
+		int seconds2 = Integer.parseInt(tokenizer2.nextToken());
+		int nanoseconds2 = Integer.parseInt(tokenizer2.nextToken());
+		
+		MyDateTime datetimeToSearch = new MyDateTime(year, month, day, hour, minutes, seconds, nanoseconds);
+		MyDateTime datetimeToSearch2 = new MyDateTime(year2, month2, day2, hour2, minutes2, seconds2, nanoseconds2);
+	
+		
+		
+		if (services==null)
+		{
+			System.out.println("Lista Vacia2");
+		}
+		for(Service s: services)
+		{
+			
+			if (s.getTripStartAux()==datetimeToSearch&&s.getTripEndAux()==datetimeToSearch2)
+			{
+				respuesta.add(s);
+			}
+		
+		}
+		
+		
+		return respuesta;
 	}
 
 

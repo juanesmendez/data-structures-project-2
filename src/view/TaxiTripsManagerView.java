@@ -225,6 +225,10 @@ public class TaxiTripsManagerView
 
 				// Req 2B
 				LinkedList<Service> listaServicios3 = Controller.R2B(idZonaRecogida, idZonaTerminacion, fechaInicialReq2B, fechaFinalReq2B, horaInicialReq2B, horaFinalReq2B);
+				if(listaServicios3==null)
+				{
+					System.out.println("Lista vacia");
+				}
 				for(Service s : listaServicios3){
 					System.out.println("Id Trip: "+ s.getTripId());
 					System.out.println("  Zona recogida: " + s.getPickupCommunityArea());

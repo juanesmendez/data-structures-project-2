@@ -568,12 +568,30 @@ public class TaxiTripsManager implements ITaxiTripsManager
 		// TODO Auto-generated method stub
 		LinkedList <Service> services = null;
 		
+		LinkedList<Service> respuesta= new List<Service>();
 		distanciaMinima = distanciaMinima - (distanciaMinima % 1);
 		distanciaMaxima = distanciaMaxima - (distanciaMaxima % 1);
 		
-		services = this.treeServicesByMiles.get((int) distanciaMinima);
 		
-		return services;
+		for(int i= (int) distanciaMinima;i<distanciaMaxima;i++){
+			services = this.treeServicesByMiles.get(i);
+			
+			
+			if (services!=null)
+			{
+				
+				for(Service s:services)
+				{
+					respuesta.add(s);
+				}
+			}
+			else
+			{
+				System.out.println("Esta vacia");
+			}
+		}
+		
+		return respuesta;
 	}
 
 
@@ -581,8 +599,8 @@ public class TaxiTripsManager implements ITaxiTripsManager
 	public LinkedList<Service> B2ServiciosPorZonaRecogidaYLlegada(int zonaInicio, int zonaFinal, String fechaI,
 			String fechaF, String horaI, String horaF) {
 		// TODO Auto-generated method stub
-		LinkedList <Service> services = null;
-		LinkedList <Service> respuesta =null;
+		LinkedList <Service> services = new List<Service>();
+		LinkedList <Service> respuesta =new List<Service>();
 		
 		String key = zonaInicio+"-"+zonaFinal ;
 		
@@ -624,15 +642,18 @@ public class TaxiTripsManager implements ITaxiTripsManager
 		if (services==null)
 		{
 			System.out.println("Lista Vacia2");
-		}
+		}else{
 		for(Service s: services)
 		{
 			
 			if (s.getTripStartAux()==datetimeToSearch&&s.getTripEndAux()==datetimeToSearch2)
 			{
 				respuesta.add(s);
+				System.out.println("agrego " + s);
 			}
+			
 		
+		}
 		}
 		
 		

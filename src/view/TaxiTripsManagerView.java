@@ -229,12 +229,13 @@ public class TaxiTripsManagerView
 				{
 					System.out.println("Lista vacia");
 				}
+				else{
 				for(Service s : listaServicios3){
 					System.out.println("Id Trip: "+ s.getTripId());
 					System.out.println("  Zona recogida: " + s.getPickupCommunityArea());
 					System.out.println("  Zona terminacion: " + s.getDropoffCommunityArea());
 					System.out.println("  Hora inicial: " + s.getTripStart().toLocalTime().toString());
-				}
+				}}
 
 				break;
 

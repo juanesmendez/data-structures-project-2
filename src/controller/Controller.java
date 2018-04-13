@@ -71,7 +71,7 @@ public class Controller
 			return manager.R1C_OrdenarTaxisPorPuntos();
 		}	
 		//2C
-		public static LinkedList<Service> R2C(String taxiIDReq2C, double millas, double latitud, double longitud)
+		public static LinkedList<Service> R2C(String taxiIDReq2C, double millas, double latitud, double longitud) throws Exception
 		{
 			return manager.R2C_LocalizacionesGeograficas(taxiIDReq2C, millas, latitud, longitud);
 		}

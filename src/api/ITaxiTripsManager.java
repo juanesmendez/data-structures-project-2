@@ -72,7 +72,7 @@ public interface ITaxiTripsManager
      * @param longitud de referencia
 	 * @return
 	 */
-	public LinkedList<Service> R2C_LocalizacionesGeograficas(String taxiIDReq2C, double millas, double latitud, double longitud);
+	public LinkedList<Service> R2C_LocalizacionesGeograficas(String taxiIDReq2C, double millas, double latitud, double longitud)throws Exception;
 	
 	/**
 	 * Metodo que permite retornar todos los servicios registrados por hora de recogida en el rango de 15 minutos mas cercano, 

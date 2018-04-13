@@ -2,6 +2,7 @@ package test;
 
 import model.vo.Company;
 import model.vo.MyDateTime;
+import utils.Utils;
 
 public class Test {
 
@@ -31,13 +32,19 @@ public class Test {
 		if(c1.compareTo(c2) == 0) {
 			System.out.println("TRUE");
 		}*/
-		
+		/*
 		MyDateTime datetime = new MyDateTime(2015, 8, 10, 10, 0, 0, 0);
 		
 		MyDateTime datetime2 = new MyDateTime(2015, 8, 10, 10, 0, 0, 0);
 		
 		System.out.println(datetime.compareTo(datetime2));
 		System.out.println(datetime.toString());
+		
+		*/
+		
+		double distance = 0.00062137*Utils.getDistance(4.659638, -74.052206, 4.679088, -74.045211);
+		
+		System.out.println("Distancia: "+distance);
 	}
 
 }

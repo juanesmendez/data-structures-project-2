@@ -9,6 +9,7 @@ import model.data_structures.LinkedList;
 import model.logic.TaxiTripsManager;
 import model.vo.Service;
 import model.vo.Taxi;
+import utils.Utils;
 
 /**
  * view del programa
@@ -313,16 +314,21 @@ public class TaxiTripsManagerView
 				}
 
 				// Req 2C
-				LinkedList<Service> servicios2C = Controller.R2C(taxiIDReq2C, millas, latitud, longitud);
-
-				for(Service s : servicios2C)
-				{
-					System.out.println();
-					System.out.println("Servicio: " + s.getTripId());
-					//TODO imprimir la latitud y la longitud de los servicios
-					System.out.println("  (Lat: " + s.getPickupLatitude() + ", Long: " + s.getPickupLongitude() + " )");
-					System.out.println("  Distancia (millas) a la referencia: " + "�<calcular>?");
+				try {
+					LinkedList<Service> servicios2C = Controller.R2C(taxiIDReq2C, millas, latitud, longitud);
+					for(Service s : servicios2C)
+					{
+						System.out.println();
+						System.out.println("Servicio: " + s.getTripId());
+						//TODO imprimir la latitud y la longitud de los servicios
+						System.out.println("  (Lat: " + s.getPickupLatitude() + ", Long: " + s.getPickupLongitude() + " )");
+						System.out.println("  Distancia (millas) a la referencia: " +(0.00062137*Utils.getDistance(latitud, longitud, s.getPickupLatitude(), s.getPickupLongitude())));
+					}
+				}catch(Exception e) {
+					System.out.println(e.getMessage());
+					e.printStackTrace();
 				}
+				
 
 				break;
 

@@ -30,6 +30,7 @@ import model.data_structures.RedBlackBST;
 import model.sort.Heap;
 import model.vo.*;
 
+import utils.Utils;
 public class TaxiTripsManager implements ITaxiTripsManager 
 {
 
@@ -50,7 +51,7 @@ public class TaxiTripsManager implements ITaxiTripsManager
 	private IRedBlackBST<Integer,LinkedList<Service>> treeServicesByMiles;; // Tree requirement 1B
 	private IHashTable<String,LinkedList<Service>> hashTableServicesByPickupDroppoffArea; //HashTable requirement 2B
 	private LinkedList<Taxi> taxis; //List requirement 1C
-	//private IHashTable<String,RedBlackBST<Service>> hashTableTreeOfServices; //HashTable requirement 2C
+	private IHashTable<String,RedBlackBST<String,LinkedList<Service>>> hashTableTreeOfServices; //HashTable requirement 2C
 	private IRedBlackBST<MyDateTime,LinkedList<Service>> treeServicesByTimeRange; //Tree requirement 3C
 	
 	
@@ -62,7 +63,7 @@ public class TaxiTripsManager implements ITaxiTripsManager
 		this.treeServicesByMiles = new RedBlackBST<Integer, LinkedList<Service>>();
 		this.hashTableServicesByPickupDroppoffArea = new HashTable<String, LinkedList<Service>>();
 		this.taxis = new List<Taxi>();
-		//this. instantaite missing hashtable 2C
+		this.hashTableTreeOfServices = new HashTable<String, RedBlackBST<String,LinkedList<Service>>>();
 		this.treeServicesByTimeRange = new RedBlackBST<MyDateTime, LinkedList<Service>>();
 		
 	}
@@ -84,7 +85,7 @@ public class TaxiTripsManager implements ITaxiTripsManager
 		this.treeServicesByMiles = new RedBlackBST<Integer, LinkedList<Service>>();
 		this.hashTableServicesByPickupDroppoffArea = new HashTable<String, LinkedList<Service>>();
 		this.taxis = new List<Taxi>();
-		//Instantiate the hashtable missing
+		this.hashTableTreeOfServices = new HashTable<String, RedBlackBST<String,LinkedList<Service>>>();
 		this.treeServicesByTimeRange = new RedBlackBST<MyDateTime, LinkedList<Service>>();
 		
 		for(int i=0;i<serviceFilesArray.length;i++) {
@@ -194,7 +195,7 @@ public class TaxiTripsManager implements ITaxiTripsManager
 					}
 					
 					pickupLatitude = Double.parseDouble(auxPickupLatitude);
-					//System.out.println("Pickup Centroid Latitude: "+pickupCentroidLatitude);
+					System.out.println("Pickup Centroid Latitude: "+pickupLatitude);
 					// Add pickup_centroid_location which is an array
 					
 					String auxPickupLongitude = (String) jsonObject.get("pickup_centroid_longitude");
@@ -202,7 +203,7 @@ public class TaxiTripsManager implements ITaxiTripsManager
 						auxPickupLongitude="0";
 					}
 					pickupLongitude = Double.parseDouble(auxPickupLongitude);
-					//System.out.println("Pickup Centroid Longitude: "+pickupCentroidLongitude);
+					System.out.println("Pickup Centroid Longitude: "+pickupLongitude);
 					aux = (String) jsonObject.get("pickup_community_area");
 					if(aux!=null) {
 						pickupCommunityArea = Integer.parseInt(aux);
@@ -332,6 +333,9 @@ public class TaxiTripsManager implements ITaxiTripsManager
 					//Requirement 1C
 					this.taxis.add(taxi);
 					
+					//Requirement 2C
+					this.constructHashTableR2C(service);
+					
 					//Requirement 3C
 					this.constructTreeR3C(service, tripStartAux);
 					
@@ -389,6 +393,7 @@ public class TaxiTripsManager implements ITaxiTripsManager
 			System.out.println();
 		}
 		*/
+		/*
 		if(this.hashTableServicesByTripSeconds.keys() != null) {
 			Iterable<Integer> keys = this.hashTableServicesByTripSeconds.keys();
 			int contadoooor=0;
@@ -400,7 +405,24 @@ public class TaxiTripsManager implements ITaxiTripsManager
 			System.out.println("#LLAVES EN HASH: "+ contadoooor);
 		}else {
 			System.out.println("HASH NULA!!!!");
+		}*/
+		int contLlaves=0;
+		if(this.hashTableTreeOfServices !=null) {
+			Iterable<String>keys = this.hashTableTreeOfServices.keys();
+			for(String str:keys) {
+				System.out.println(str);
+				RedBlackBST<String, LinkedList<Service>> tr = this.hashTableTreeOfServices.get(str);
+				for(String id:tr.keys()) {
+					System.out.println("\tTaxi ID: "+id);
+					LinkedList<Service> listaServicios= tr.get(id);
+					for(Service s:listaServicios) {
+						System.out.println("\t\t\tLatitud: "+s.getPickupLatitude()+"\t\tLongitud: "+s.getPickupLongitude());
+					}
+				}
+				contLlaves++;
+			}
 		}
+		System.out.println("Numero de llaves: "+contLlaves);
 		return cargo;
 	}
 
@@ -482,6 +504,38 @@ public class TaxiTripsManager implements ITaxiTripsManager
 		{
 			services.add(service);
 		}
+	}
+	
+	public void constructHashTableR2C(Service service) {
+		double pickupLatitude = service.getPickupLatitude();
+		double pickupLongitude = service.getPickupLongitude();
+		
+		//Key will be separated by a slash: /
+		//Check if it the decimal of the latitude and longitude can be rounded even better:
+		String key = Double.toString(Math.floor(pickupLatitude*1000)) +"/"+ Double.toString(Math.floor(pickupLongitude*1000));//The key is the concatenation of the string latitude and the string longitude
+		
+		RedBlackBST<String,LinkedList<Service>> tree = this.hashTableTreeOfServices.get(key);
+		
+		if(tree == null) {
+			tree = new RedBlackBST<String, LinkedList<Service>>();
+			LinkedList<Service> services = new List<Service>();
+			services.add(service);
+			tree.put(service.getTaxi().getTaxiId(), services);
+			this.hashTableTreeOfServices.put(key, tree);
+		}else {
+			LinkedList<Service> services = tree.get(service.getTaxi().getTaxiId());
+			if(services==null) {
+				services = new List<Service>();
+				services.add(service);
+				tree.put(service.getTaxi().getTaxiId(), services);
+			}else {
+				services.add(service);
+			}
+		}
+		
+		
+		
+		
 	}
 	
 	public void constructTreeR3C(Service service,MyDateTime tripStartAux ) {
@@ -705,10 +759,29 @@ public class TaxiTripsManager implements ITaxiTripsManager
 
 
 	@Override
-	public LinkedList<Service> R2C_LocalizacionesGeograficas(String taxiIDReq2C, double millas, double latitud,
-			double longitud) {
+	public LinkedList<Service> R2C_LocalizacionesGeograficas(String taxiIDReq2C, double millas, double latitud, double longitud) throws Exception {
 		// TODO Auto-generated method stub
-		return null;
+		
+		LinkedList<Service> servicesInZone = new List<Service>();
+		String key = Double.toString(Math.floor(latitud*1000))+"/"+Double.toString(Math.floor(longitud*1000));
+		
+		RedBlackBST<String, LinkedList<Service>> tree = this.hashTableTreeOfServices.get(key);
+		
+		if(tree==null) {
+			throw new Exception("Latitude-longitude coordinate not found in our data base.");
+		}else {
+			LinkedList<Service> services = tree.get(taxiIDReq2C);
+			for(Service s:services) {				
+				//Transform from meters to miles
+				double distanceBetweenCoordinates = Utils.getDistance(latitud, longitud, s.getPickupLatitude(), s.getPickupLongitude());
+				distanceBetweenCoordinates = distanceBetweenCoordinates * 0.00062137; //I convert the answer from meters to miles
+				if(distanceBetweenCoordinates <= millas) {
+					servicesInZone.add(s);
+				}
+			}
+		}
+		
+		return servicesInZone;
 	}
 
 

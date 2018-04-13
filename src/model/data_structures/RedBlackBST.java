@@ -454,7 +454,9 @@ public class RedBlackBST<Key extends Comparable<Key>, Value> implements IRedBlac
         return height(root);
     }
     private int height(Node x) {
-        if (x == null) return -1;
+        if (x == null) {
+        	return -1;
+        }
         return 1 + Math.max(height(x.left), height(x.right));
     }
 

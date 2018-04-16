@@ -25,6 +25,7 @@ public class Service implements Comparable<Service> {
 	private double pickupLongitude;
 	private MyDateTime tripStartAux;
 	private MyDateTime tripEndAux;
+	private float distanceToAverageCoordinate;
 	/**
 	 * @return id - Trip_id
 	 */
@@ -54,6 +55,8 @@ public class Service implements Comparable<Service> {
 		this.pickupLongitude = pickupLongitude;
 		this.tripStartAux = tripStartAux;
 		this.tripEndAux = tripEndAux;
+		
+		this.distanceToAverageCoordinate = 0;
 	}
 
 	/**
@@ -150,6 +153,16 @@ public class Service implements Comparable<Service> {
 	public MyDateTime getTripEndAux ()
 	{
 		return tripEndAux;
+	}
+
+	
+	
+	public float getDistanceToAverageCoordinate() {
+		return distanceToAverageCoordinate;
+	}
+
+	public void setDistanceToAverageCoordinate(float distanceToAverageCoordinate) {
+		this.distanceToAverageCoordinate = distanceToAverageCoordinate;
 	}
 
 	@Override

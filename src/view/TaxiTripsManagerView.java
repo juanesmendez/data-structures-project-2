@@ -288,42 +288,20 @@ public class TaxiTripsManagerView
 					System.out.println("Cantidad invalida");
 				}
 
-
-				System.out.println("Ingrese la latitud de referencia");
-				String latitudReq2C = sc.next();
-				double latitud = 0;
-				try
-				{
-					latitud = Double.parseDouble(latitudReq2C);
-				}
-				catch(Exception e)
-				{
-					System.out.println("Latitud invalida");
-				}
-
-				System.out.println("Ingrese la longitud de referencia");
-				String longitudReq2C = sc.next();
-				double longitud = 0;
-				try
-				{
-					longitud = Double.parseDouble(longitudReq2C);
-				}
-				catch(Exception e)
-				{
-					System.out.println("Latitud invalida");
-				}
-
 				// Req 2C
 				try {
-					LinkedList<Service> servicios2C = Controller.R2C(taxiIDReq2C, millas, latitud, longitud);
-					for(Service s : servicios2C)
-					{
-						System.out.println();
-						System.out.println("Servicio: " + s.getTripId());
-						//TODO imprimir la latitud y la longitud de los servicios
-						System.out.println("  (Lat: " + s.getPickupLatitude() + ", Long: " + s.getPickupLongitude() + " )");
-						System.out.println("  Distancia (millas) a la referencia: " +(0.00062137*Utils.getDistance(latitud, longitud, s.getPickupLatitude(), s.getPickupLongitude())));
+					LinkedList<Service> servicios2C = Controller.R2C(taxiIDReq2C, millas);
+					if(servicios2C!=null) {
+						for(Service s : servicios2C)
+						{
+							System.out.println();
+							System.out.println("Servicio: " + s.getTripId());
+							//TODO imprimir la latitud y la longitud de los servicios
+							System.out.println("  (Lat: " + s.getPickupLatitude() + ", Long: " + s.getPickupLongitude() + " )");
+							System.out.println("  Distancia (millas) a la referencia: " +s.getDistanceToAverageCoordinate());
+						}
 					}
+					
 				}catch(Exception e) {
 					System.out.println(e.getMessage());
 					e.printStackTrace();

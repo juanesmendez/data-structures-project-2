@@ -664,7 +664,7 @@ public class TaxiTripsManager implements ITaxiTripsManager
 			}
 			else
 			{
-				System.out.println("Esta vacia");
+				System.out.println("No hay servicios que cumplan el minimo de distancia: " +distanciaMinima+ "ni el maximo de distancia: " + distanciaMaxima );
 			}
 		}
 		
@@ -718,23 +718,33 @@ public class TaxiTripsManager implements ITaxiTripsManager
 		
 		if (services==null)
 		{
-			System.out.println("Lista Vacia2");
-		}else{
-		for(Service s: services)
+			System.out.println("No hay servicios con las especificaciones de codigo de area " + zonaInicio + " - " + zonaFinal);
+		}
+		else
 		{
-			
-			if (s.getTripStartAux()==datetimeToSearch&&s.getTripEndAux()==datetimeToSearch2)
+			for(Service s: services)
 			{
-				respuesta.add(s);
-				System.out.println("agrego " + s);
+			
+				if (s.getTripStartAux()==datetimeToSearch&&s.getTripEndAux()==datetimeToSearch2)
+				{
+					respuesta.add(s);
+					System.out.println("agrego " + s);
+				}
 			}
 			
-		
-		}
 		}
 		
+		if(respuesta.size()==0)
+		{
+			System.out.println("No hay servicios con las especificaciones horarias entre " + datetimeToSearch + " y " + datetimeToSearch2);;
+		}
 		
 		return respuesta;
+		
+		
+		
+		
+		
 	}
 
 

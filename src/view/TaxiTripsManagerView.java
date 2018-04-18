@@ -211,7 +211,8 @@ public class TaxiTripsManagerView
 				//Fecha Inicial
 				System.out.println("Ingrese la fecha inicial (Ej : 2017-02-01)");
 				String fechaInicialReq2B = sc.next();
-
+				
+				
 				//Hora inicial
 				System.out.println("Ingrese la hora inicial (Ej: 09:00:00.000)");
 				String horaInicialReq2B = sc.next();

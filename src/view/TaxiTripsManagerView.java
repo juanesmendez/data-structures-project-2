@@ -301,6 +301,8 @@ public class TaxiTripsManagerView
 							System.out.println("  (Lat: " + s.getPickupLatitude() + ", Long: " + s.getPickupLongitude() + " )");
 							System.out.println("  Distancia (millas) a la referencia: " +s.getDistanceToAverageCoordinate());
 						}
+					}else {
+						System.out.println("No existen servicios de ese taxi en ese rango de distancia hacia la latitud-longitud de referencia");
 					}
 					
 				}catch(Exception e) {

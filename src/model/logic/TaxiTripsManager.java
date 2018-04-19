@@ -427,6 +427,19 @@ public class TaxiTripsManager implements ITaxiTripsManager
 		}else {
 			System.out.println("HASH NULA!!!!");
 		}*/
+		/*
+		for(Float f:this.hashTableTreeOfServices.keys()) {
+			RedBlackBST<String, LinkedList<Service>> tree= this.hashTableTreeOfServices.get(f);
+			System.out.println("DISTANCIA a la referencia (GRUPO): "+f);
+			for(String id:tree.keys()) {
+				LinkedList<Service> services = tree.get(id);
+				System.out.println("TAXI ID: "+id);
+				for(Service s:services) {
+					System.out.println("Distance to average coordinate: "+s.getDistanceToAverageCoordinate());
+				}
+			}
+			System.out.println();
+		}*/
 		
 		return cargo;
 	}
@@ -524,16 +537,28 @@ public class TaxiTripsManager implements ITaxiTripsManager
 		for(Integer key:this.hashTableServicesByTripSeconds.keys()) { //I used a hashTable that contains all the services
 			LinkedList<Service>services=this.hashTableServicesByTripSeconds.get(key);
 			for(Service s:services) {
+				float group;
 				double distanceMiles = 0.00062137*Utils.getDistance(promLatitud, promLongitude, s.getPickupLatitude(), s.getPickupLongitude()); //Calculates distance from average coordinate to each indivual service coordinate
 				float distance = (float) distanceMiles;
 				s.setDistanceToAverageCoordinate(distance);
+				System.out.println("Distance: "+distance);
 				/*
 				System.out.println("Distancia: "+distance+"\t\t"+"Latitud: "+s.getPickupLatitude()+"\t"+"Longitud: "+s.getPickupLongitude());
 				System.out.println("Modulo 1: "+distance%1);
 				System.out.println("Segundo Modulo: "+(distance%1)%0.1);
 				System.out.println("Grupo: "+(distance-((distance%1)%0.1)));
 				System.out.println(s.getTaxi().getTaxiId());*/
-				float group = (float) (distance-((distance%1)%0.1));
+				
+				if(distanceMiles < 1) {
+					group = (float) (distance-(distance%0.1));
+				}else {
+					
+					group = (float) (distance-((distance%1)%0.1));
+				}
+				
+				
+				System.out.println("Grupo: "+group);
+				System.out.println();
 				RedBlackBST<String,LinkedList<Service>>tree = this.hashTableTreeOfServices.get(group);
 				LinkedList<Service> listServices;
 				if(tree == null) {
@@ -795,8 +820,15 @@ public class TaxiTripsManager implements ITaxiTripsManager
 	public LinkedList<Service> R2C_LocalizacionesGeograficas(String taxiIDReq2C, double millas) throws Exception {
 		// TODO Auto-generated method stub
 		LinkedList<Service> services = null;
+		float group;
+		if(millas < 1) {
+			group = (float) (millas-(millas%0.1));
+			
+		}else {
+			group = (float) (millas-((millas%1)%0.1));
+		}
 		
-		float group = (float)(millas-((millas%1)%0.1));
+		System.out.println(group);
 		RedBlackBST<String, LinkedList<Service>>tree = this.hashTableTreeOfServices.get(group);
 		
 		if(tree!=null) {

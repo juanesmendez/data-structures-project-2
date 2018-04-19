@@ -541,7 +541,7 @@ public class TaxiTripsManager implements ITaxiTripsManager
 				double distanceMiles = 0.00062137*Utils.getDistance(promLatitud, promLongitude, s.getPickupLatitude(), s.getPickupLongitude()); //Calculates distance from average coordinate to each indivual service coordinate
 				float distance = (float) distanceMiles;
 				s.setDistanceToAverageCoordinate(distance);
-				System.out.println("Distance: "+distance);
+				//System.out.println("Distance: "+distance);
 				/*
 				System.out.println("Distancia: "+distance+"\t\t"+"Latitud: "+s.getPickupLatitude()+"\t"+"Longitud: "+s.getPickupLongitude());
 				System.out.println("Modulo 1: "+distance%1);
@@ -557,8 +557,8 @@ public class TaxiTripsManager implements ITaxiTripsManager
 				}
 				
 				
-				System.out.println("Grupo: "+group);
-				System.out.println();
+				//System.out.println("Grupo: "+group);
+				//System.out.println();
 				RedBlackBST<String,LinkedList<Service>>tree = this.hashTableTreeOfServices.get(group);
 				LinkedList<Service> listServices;
 				if(tree == null) {
@@ -828,7 +828,7 @@ public class TaxiTripsManager implements ITaxiTripsManager
 			group = (float) (millas-((millas%1)%0.1));
 		}
 		
-		System.out.println(group);
+		//ystem.out.println(group);
 		RedBlackBST<String, LinkedList<Service>>tree = this.hashTableTreeOfServices.get(group);
 		
 		if(tree!=null) {

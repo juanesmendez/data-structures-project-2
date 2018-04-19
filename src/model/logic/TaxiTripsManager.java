@@ -840,8 +840,10 @@ public class TaxiTripsManager implements ITaxiTripsManager
 
 
 	@Override
-	public LinkedList<Service> R3C_ServiciosEn15Minutos(String fecha, String hora) {
+	public LinkedList<Service> R3C_ServiciosEn15Minutos(String fecha, String hora,int zonaRecogida, int zonaTerminacion) {
 		// TODO Auto-generated method stub
+		LinkedList<Service> servicesToSend = new List<Service>();
+		
 		StringTokenizer tokenizer = new StringTokenizer(fecha, "-");
 		int year = Integer.parseInt(tokenizer.nextToken());
 		int month = Integer.parseInt(tokenizer.nextToken());
@@ -860,6 +862,12 @@ public class TaxiTripsManager implements ITaxiTripsManager
 		
 		LinkedList<Service> services = this.treeServicesByTimeRange.get(datetimeToSearch);
 		
-		return services;
+		for(Service s:services) {
+			if(s.getPickupCommunityArea() == zonaRecogida && s.getDropoffCommunityArea() == zonaTerminacion) {
+				servicesToSend.add(s);
+			}
+		}
+		
+		return servicesToSend;
 	}
 }

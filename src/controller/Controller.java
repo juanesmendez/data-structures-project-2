@@ -76,9 +76,9 @@ public class Controller
 			return manager.R2C_LocalizacionesGeograficas(taxiIDReq2C, millas);
 		}
 		//3C
-		public static LinkedList<Service> R3C(String fecha, String hora) 
+		public static LinkedList<Service> R3C(String fecha, String hora, int zonaRecogida,int zonaTerminacion) 
 		{
-			return manager.R3C_ServiciosEn15Minutos(fecha, hora);
+			return manager.R3C_ServiciosEn15Minutos(fecha, hora,zonaRecogida,zonaTerminacion);
 		}	
 
 }

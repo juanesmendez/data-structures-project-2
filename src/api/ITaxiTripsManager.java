@@ -83,6 +83,6 @@ public interface ITaxiTripsManager
      * @param hora de recogida
 	 * @return
 	 */
-	public LinkedList<Service> R3C_ServiciosEn15Minutos(String fecha, String hora);  
+	public LinkedList<Service> R3C_ServiciosEn15Minutos(String fecha, String hora, int zonaRecogida, int zonaTerminacion);  
 
 }

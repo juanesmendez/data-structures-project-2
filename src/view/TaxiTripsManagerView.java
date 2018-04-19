@@ -323,9 +323,18 @@ public class TaxiTripsManagerView
 				//hora 
 				System.out.println("Ingrese la hora de inicio con minutos arbitrarios en rango [0, 59] (Ej: 09:25:00.000)");
 				String hora = sc.next();
-
+				
+				System.out.println("Ingrese la zona de recogida de consulta:");
+				String zonaRec = sc.next();
+				int zonaRecogida = Integer.parseInt(zonaRec);
+				
+				
+				System.out.println("Ingrese la zona de terminacion de consulta:");
+				String zonaTer = sc.next();
+				int zonaTerminacion = Integer.parseInt(zonaTer);
+				
 				// Req 3C
-				LinkedList<Service> servicios3C = Controller.R3C(fecha, hora);
+				LinkedList<Service> servicios3C = Controller.R3C(fecha, hora, zonaRecogida, zonaTerminacion);
 
 				for(Service s : servicios3C)
 				{

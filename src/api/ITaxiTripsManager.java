@@ -21,15 +21,16 @@ public interface ITaxiTripsManager
 	 * @param compania: nombre de la compaNia
 	 * @return Taxi(s) que mas servicios realizo (puede haber mas de uno) y sus respectivos servicios.
 	 */
-	LinkedList<Taxi> A1TaxiConMasServiciosEnZonaParaCompania(int zonaInicio, String compania);
+	LinkedList<Taxi> A1TaxiConMasServiciosEnZonaParaCompania(int zonaInicio, String compania) throws Exception;
 
 	/**
 	 * Dada una duracion en segundos retornar los servicios que esten en el mismo rango de duracion (mismo minuto) que la dada.
 	 * Por cada servicio se debe mostrar el id del taxi, id del servicio y su duracion en segundos.
 	 * @param duracion: duracion de consulta en segundos
 	 * @return Lista con los servicios con duracion en el mismo minuto (rango) de la duracion dada
+	 * @throws Exception 
 	 */
-	LinkedList<Service> A2ServiciosPorDuracion(int duracion);
+	LinkedList<Service> A2ServiciosPorDuracion(int duracion) throws Exception;
 	
 	/**
 	 * Dada una distancia minima y maxima retornar los servicios que esten dentro del rango de estas distancias

@@ -100,6 +100,7 @@ public class TaxiTripsManagerView
 
 				//Req 1A
 				// Mostrar el Id del (de los) taxi(s) y fecha/hora de inicio de sus servicios iniciando en la zona dada
+				try {
 				LinkedList<Taxi> listaTaxis = Controller.R1A(idZona, companiaReq1A);
 				
 				if(listaTaxis !=null) {
@@ -114,7 +115,13 @@ public class TaxiTripsManagerView
 						}
 					}
 				}
-				
+				}catch(Exception e) {
+					System.out.println();
+					System.out.println(e.getMessage());
+					e.printStackTrace();
+					System.out.println();
+					
+				}
 
 				break;
 
@@ -130,13 +137,23 @@ public class TaxiTripsManagerView
 					System.err.println("Duracion invalida");
 					break;
 				}
-				System.out.println("DURACION: "+duracion);
-				// Req 2A
-				LinkedList<Service> listaServicios = Controller.R2A(duracion);
-				for(Service s : listaServicios){
-					System.out.println("IdTaxi: " + s.getTaxi().getTaxiId()
-					+ "  IdServicio: "+ s.getTripId()
-					+ "  Duracion: "+ s.getTripSeconds());
+				
+				try {
+					System.out.println("DURACION: "+duracion);
+					// Req 2A
+
+					LinkedList<Service> listaServicios = Controller.R2A(duracion);
+					for(Service s : listaServicios){
+						System.out.println("IdTaxi: " + s.getTaxi().getTaxiId()
+								+ "  IdServicio: "+ s.getTripId()
+								+ "  Duracion: "+ s.getTripSeconds());
+					}
+				}catch(Exception e) {
+					System.out.println();
+					System.out.println(e.getMessage());
+					System.out.println();
+					e.printStackTrace();
+					System.out.println();
 				}
 
 				break;
@@ -306,8 +323,10 @@ public class TaxiTripsManagerView
 					}
 					
 				}catch(Exception e) {
+					System.out.println();
 					System.out.println(e.getMessage());
 					e.printStackTrace();
+					System.out.println();
 				}
 				
 

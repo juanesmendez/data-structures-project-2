@@ -542,18 +542,24 @@ public class TaxiTripsManager implements ITaxiTripsManager
 				float distance = (float) distanceMiles;
 				s.setDistanceToAverageCoordinate(distance);
 				//System.out.println("Distance: "+distance);
-				/*
-				System.out.println("Distancia: "+distance+"\t\t"+"Latitud: "+s.getPickupLatitude()+"\t"+"Longitud: "+s.getPickupLongitude());
-				System.out.println("Modulo 1: "+distance%1);
-				System.out.println("Segundo Modulo: "+(distance%1)%0.1);
-				System.out.println("Grupo: "+(distance-((distance%1)%0.1)));
-				System.out.println(s.getTaxi().getTaxiId());*/
+				
+				
 				
 				if(distanceMiles < 1) {
-					group = (float) (distance-(distance%0.1));
+					group = (float) (distance-(distance%0.1));/*
+					System.out.println("Distancia: "+distance+"\t\t"+"Latitud: "+s.getPickupLatitude()+"\t"+"Longitud: "+s.getPickupLongitude());
+					System.out.println("Modulo: "+(distance%0.1));
+					System.out.println("Grupo: "+(distance-(distance%0.1)));
+					System.out.println(s.getTaxi().getTaxiId());*/
 				}else {
 					
 					group = (float) (distance-((distance%1)%0.1));
+					/*
+					System.out.println("Distancia: "+distance+"\t\t"+"Latitud: "+s.getPickupLatitude()+"\t"+"Longitud: "+s.getPickupLongitude());
+					System.out.println("Modulo 1: "+distance%1);
+					System.out.println("Segundo Modulo: "+(distance%1)%0.1);
+					System.out.println("Grupo: "+(distance-((distance%1)%0.1)));
+					System.out.println(s.getTaxi().getTaxiId());*/
 				}
 				
 				
@@ -612,13 +618,18 @@ public class TaxiTripsManager implements ITaxiTripsManager
 
 
 	@Override
-	public LinkedList<Taxi> A1TaxiConMasServiciosEnZonaParaCompania(int zonaInicio, String compania) {
+	public LinkedList<Taxi> A1TaxiConMasServiciosEnZonaParaCompania(int zonaInicio, String compania) throws Exception {
 		// TODO Auto-generated method stub
 		Company company = new Company(compania);
 		IHashTableLP<String,Taxi> taxis = this.treeCompanies.get(company);
 		int mayor = 0;
 		Taxi mayorTaxi = null;
 		LinkedList<Taxi> taxisResultantes = new List<Taxi>();
+		
+		if(zonaInicio >77 || zonaInicio <0) {
+			throw new Exception("Zona de inicio no valida");
+		}
+		
 		if(taxis != null) {
 			for(String idTaxi:taxis.keys()) {
 				Taxi t= taxis.get(idTaxi);
@@ -644,7 +655,8 @@ public class TaxiTripsManager implements ITaxiTripsManager
 				
 			}
 		}else {
-			return null;
+			throw new Exception("No se encontro la compañia en nuestra base de datos.");
+
 		}
 		
 		
@@ -653,9 +665,13 @@ public class TaxiTripsManager implements ITaxiTripsManager
 
 
 	@Override
-	public LinkedList<Service> A2ServiciosPorDuracion(int duracion) {
+	public LinkedList<Service> A2ServiciosPorDuracion(int duracion) throws Exception {
 		// TODO Auto-generated method stub
 		LinkedList<Service> services=null;
+		
+		if(duracion <0) {
+			throw new Exception("Duracion en segundos invalida. Duracion negativa");
+		}
 		
 		duracion = duracion - (duracion%60);
 		services = this.hashTableServicesByTripSeconds.get(duracion);
@@ -828,11 +844,19 @@ public class TaxiTripsManager implements ITaxiTripsManager
 			group = (float) (millas-((millas%1)%0.1));
 		}
 		
+		
+		
 		//ystem.out.println(group);
 		RedBlackBST<String, LinkedList<Service>>tree = this.hashTableTreeOfServices.get(group);
 		
+		
+		
 		if(tree!=null) {
 			services= tree.get(taxiIDReq2C);
+			/*
+			if(services == null) {
+				throw new Exception("El Taxi ID NO se encuentra en nuestra base de datos en esa distancia de millas a la latitud-longitud de referencia.");
+			}*/
 		}
 		
 		return services;
@@ -843,7 +867,7 @@ public class TaxiTripsManager implements ITaxiTripsManager
 	public LinkedList<Service> R3C_ServiciosEn15Minutos(String fecha, String hora,int zonaRecogida, int zonaTerminacion) {
 		// TODO Auto-generated method stub
 		LinkedList<Service> servicesToSend = new List<Service>();
-		
+	
 		StringTokenizer tokenizer = new StringTokenizer(fecha, "-");
 		int year = Integer.parseInt(tokenizer.nextToken());
 		int month = Integer.parseInt(tokenizer.nextToken());

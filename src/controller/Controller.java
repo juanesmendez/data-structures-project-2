@@ -43,13 +43,13 @@ public class Controller
 	}
 	
 	//1A
-		public static LinkedList<Taxi> R1A(int zonaInicio, String compania)
+		public static LinkedList<Taxi> R1A(int zonaInicio, String compania) throws Exception
 		{
 			return manager.A1TaxiConMasServiciosEnZonaParaCompania(zonaInicio, compania);
 		}
 
 		//2A
-		public static LinkedList<Service> R2A(int duracion)
+		public static LinkedList<Service> R2A(int duracion) throws Exception
 		{
 			return manager.A2ServiciosPorDuracion(duracion);
 		}
